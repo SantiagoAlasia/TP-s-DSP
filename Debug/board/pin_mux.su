@@ -1,0 +1,11 @@
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_clock.h:1496:20:CLOCK_EnableClock	24	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_port.h:360:20:PORT_SetPinConfig	32	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_port.h:463:20:PORT_SetPinMux	24	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_gpio.h:487:20:GPIO_SetPinInterruptConfig	24	static
+../board/pin_mux.c:317:6:BOARD_InitBootPins	8	static
+../board/pin_mux.c:347:6:BOARD_InitDEBUG_UARTPins	16	static
+../board/pin_mux.c:421:6:BOARD_InitSWD_DEBUGPins	24	static
+../board/pin_mux.c:518:6:BOARD_InitLEDsPins	32	static
+../board/pin_mux.c:640:6:BOARD_InitBUTTONsPins	24	static
+../board/pin_mux.c:732:6:BOARD_InitADCPins	8	static
+../board/pin_mux.c:777:6:BOARD_InitDACPins	8	static

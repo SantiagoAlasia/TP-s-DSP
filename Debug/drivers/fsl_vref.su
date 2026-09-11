@@ -1,0 +1,10 @@
+../drivers/fsl_clock.h:1496:20:CLOCK_EnableClock	24	static
+../drivers/fsl_clock.h:1530:20:CLOCK_DisableClock	24	static
+../drivers/fsl_vref.c:44:17:VREF_GetInstance	24	static
+../drivers/fsl_vref.c:88:6:VREF_Init	24	static
+../drivers/fsl_vref.c:170:6:VREF_Deinit	16	static
+../drivers/fsl_vref.c:194:6:VREF_GetDefaultConfig	16	static
+../drivers/fsl_vref.c:219:6:VREF_SetVrefTrimVal	24	static
+../drivers/fsl_vref.c:269:6:VREF_SetTrim21Val	24	static
+../drivers/fsl_vref.c:315:9:VREF_GetVrefTrimVal	24	static
+../drivers/fsl_vref.c:333:9:VREF_GetTrim21Val	24	static

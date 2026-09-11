@@ -1,0 +1,13 @@
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/core_cm33.h:2358:22:__NVIC_EnableIRQ	16	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_common_arm.h:753:24:EnableIRQ	24	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_ctimer.h:517:20:CTIMER_StartTimer	16	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_lpadc.h:997:20:LPADC_EnableInterrupts	16	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_spc.h:1105:20:SPC_EnableActiveModeAnalogModules	16	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_dac.h:308:20:DAC_Enable	16	static
+../board/peripherals.c:123:13:GPIO0_init	8	static
+../board/peripherals.c:186:13:CTIMER0_init	8	static
+../board/peripherals.c:310:13:ADC1_init	8	static
+../board/peripherals.c:358:13:VREF0_init	8	static
+../board/peripherals.c:420:13:DAC0_init	8	static
+../board/peripherals.c:432:6:BOARD_InitPeripherals	8	static
+../board/peripherals.c:445:6:BOARD_InitBootPeripherals	8	static
