@@ -75,6 +75,8 @@ SW2 (Frecuencia)─┘                      │
 ├── drivers/                 # Drivers del SDK utilizados
 └── README.md
 ```
+## Informe Del Trabajo Practico
+- https://docs.google.com/document/d/1m1BM4pqOChJ_MaOh5tzhRJZUJEIAaMJA5ULlo6_hthE/edit?usp=sharing
 
 ## Cómo compilar
 
