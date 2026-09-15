@@ -76,7 +76,7 @@ SW2 (Frecuencia)─┘                      │
 └── README.md
 ```
 ## Informe Del Trabajo Practico
-- https://docs.google.com/document/d/1m1BM4pqOChJ_MaOh5tzhRJZUJEIAaMJA5ULlo6_hthE/edit?usp=sharing
+- [https://docs.google.com/document/d/1m1BM4pqOChJ_MaOh5tzhRJZUJEIAaMJA5ULlo6_hthE/edit?usp=sharing](https://docs.google.com/document/d/12OGnF_wi7s2z0UlEzXOtJ9wNDCni3doigHSkon9hqS4/edit?usp=sharing)
 
 ## Cómo compilar
 
