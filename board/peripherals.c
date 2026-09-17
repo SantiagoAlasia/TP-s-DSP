@@ -242,7 +242,7 @@ instance:
         - hardwareCompareMode: 'kLPADC_HardwareCompareDisabled'
         - hardwareCompareValueHigh: '0'
         - hardwareCompareValueLow: '0'
-        - conversionResoultuionMode: 'kLPADC_ConversionResolutionStandard'
+        - conversionResoultuionMode: 'kLPADC_ConversionResolutionHigh'
         - enableWaitTrigger: 'false'
     - lpadcConvTriggerConfig:
       - 0:
@@ -253,7 +253,7 @@ instance:
         - priority: 'false'
         - channelAFIFOSelect: '0'
         - channelBFIFOSelect: '0'
-        - enableHardwareTrigger: 'true'
+        - enableHardwareTrigger: 'false'
     - IRQ_cfg:
       - interrupt_type: 'kLPADC_FIFO0WatermarkInterruptEnable kLPADC_FIFO1WatermarkInterruptEnable'
       - enable_irq: 'true'
@@ -292,7 +292,7 @@ lpadc_conv_command_config_t ADC1_commandsConfig[1] = {
     .hardwareCompareMode = kLPADC_HardwareCompareDisabled,
     .hardwareCompareValueHigh = 0UL,
     .hardwareCompareValueLow = 0UL,
-    .conversionResolutionMode = kLPADC_ConversionResolutionStandard,
+    .conversionResolutionMode = kLPADC_ConversionResolutionHigh,
     .enableWaitTrigger = false
   }
 };
@@ -303,7 +303,7 @@ lpadc_conv_trigger_config_t ADC1_triggersConfig[1] = {
     .channelAFIFOSelect = 0,
     .channelBFIFOSelect = 0,
     .priority = 1,
-    .enableHardwareTrigger = true
+    .enableHardwareTrigger = false
   }
 };
 

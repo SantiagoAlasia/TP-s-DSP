@@ -1,4 +1,4 @@
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/svm_functions.h:64:27:arm_exponent_f32	24	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/svm_functions.h:64:27:arm_exponent_f32	24	static
 ../CMSIS/DSP/Source/SVMFunctions/arm_svm_linear_init_f32.c:71:24:arm_svm_linear_init_f32	32	static
 ../CMSIS/DSP/Source/SVMFunctions/arm_svm_linear_predict_f32.c:434:24:arm_svm_linear_predict_f32	48	static
 ../CMSIS/DSP/Source/SVMFunctions/arm_svm_polynomial_init_f32.c:69:24:arm_svm_polynomial_init_f32	40	static

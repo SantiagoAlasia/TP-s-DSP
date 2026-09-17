@@ -1163,7 +1163,7 @@
                               <setting name="hardwareCompareMode" value="kLPADC_HardwareCompareDisabled"/>
                               <setting name="hardwareCompareValueHigh" value="0"/>
                               <setting name="hardwareCompareValueLow" value="0"/>
-                              <setting name="conversionResoultuionMode" value="kLPADC_ConversionResolutionStandard"/>
+                              <setting name="conversionResoultuionMode" value="kLPADC_ConversionResolutionHigh"/>
                               <setting name="enableWaitTrigger" value="false"/>
                            </struct>
                         </array>
@@ -1176,7 +1176,7 @@
                               <setting name="priority" value="false"/>
                               <setting name="channelAFIFOSelect" value="0"/>
                               <setting name="channelBFIFOSelect" value="0"/>
-                              <setting name="enableHardwareTrigger" value="true"/>
+                              <setting name="enableHardwareTrigger" value="false"/>
                            </struct>
                         </array>
                         <struct name="IRQ_cfg">

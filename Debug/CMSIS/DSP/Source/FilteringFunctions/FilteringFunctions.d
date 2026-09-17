@@ -2,17 +2,17 @@ CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.o \
  CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.d: \
  ../CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_32x64_init_q31.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/filtering_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_compiler.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_gcc.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_memory.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/none.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/utils.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/support_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/basic_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/filtering_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_compiler.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_gcc.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_memory.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/none.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/utils.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/support_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/basic_math_functions.h \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_32x64_q31.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_f32.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q15.c \
@@ -111,8 +111,8 @@ CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.o \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_f32.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_init_f32.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_init_q15.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_common_tables.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_common_tables.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_init_q31.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_q15.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_q31.c \
@@ -121,17 +121,17 @@ CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.o \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_levinson_durbin_f32.c \
  ../CMSIS/DSP/Source/FilteringFunctions/arm_levinson_durbin_q31.c
 ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_32x64_init_q31.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/filtering_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_compiler.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_gcc.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_memory.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/none.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/utils.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/support_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/basic_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/filtering_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_compiler.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_gcc.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_memory.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/none.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/utils.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/support_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/basic_math_functions.h:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_32x64_q31.c:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_f32.c:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_biquad_cascade_df1_fast_q15.c:
@@ -230,8 +230,8 @@ CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.o \
 ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_f32.c:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_init_f32.c:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_init_q15.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_common_tables.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_common_tables.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_init_q31.c:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_q15.c:
 ../CMSIS/DSP/Source/FilteringFunctions/arm_lms_norm_q31.c:

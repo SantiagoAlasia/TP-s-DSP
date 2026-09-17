@@ -2,14 +2,14 @@ CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.o \
  CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.d: \
  ../CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_add_f32.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_compiler.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_gcc.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_memory.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/none.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/utils.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_compiler.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_gcc.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_memory.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/none.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/utils.h \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_add_q15.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_add_q31.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_cmplx_mult_f32.c \
@@ -20,7 +20,7 @@ CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.o \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_init_q15.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_init_q31.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_inverse_f32.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_utils.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_utils.h \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_inverse_f64.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_f64.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_f32.c \
@@ -60,18 +60,18 @@ CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.o \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_qr_f32.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_qr_f64.c \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_householder_f64.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/basic_math_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/basic_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h \
  ../CMSIS/DSP/Source/MatrixFunctions/arm_householder_f32.c
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_add_f32.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_compiler.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_gcc.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_memory.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/none.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/utils.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_compiler.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_gcc.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_memory.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/none.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/utils.h:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_add_q15.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_add_q31.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_cmplx_mult_f32.c:
@@ -82,7 +82,7 @@ CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.o \
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_init_q15.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_init_q31.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_inverse_f32.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_utils.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_utils.h:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_inverse_f64.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_f64.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_mult_f32.c:
@@ -122,6 +122,6 @@ CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.o \
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_qr_f32.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_mat_qr_f64.c:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_householder_f64.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/basic_math_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/basic_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h:
 ../CMSIS/DSP/Source/MatrixFunctions/arm_householder_f32.c:
