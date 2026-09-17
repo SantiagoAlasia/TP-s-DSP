@@ -1218,7 +1218,7 @@
                            <setting name="fifoWorkMode" value="kDAC_FIFODisabled"/>
                            <setting name="referenceVoltageSource" value="kDAC_ReferenceVoltageSourceAlt3"/>
                            <setting name="referenceCurrentSource" value="kDAC_ReferenceCurrentSourcePtat"/>
-                           <setting name="enableOpampBuffer" value="false"/>
+                           <setting name="enableOpampBuffer" value="true"/>
                            <setting name="periodicTriggerNumber" value="0"/>
                            <setting name="periodicTriggerWidth" value="0"/>
                            <setting name="syncTime" value="1"/>
