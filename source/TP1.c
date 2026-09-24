@@ -43,7 +43,7 @@
 /** Cantidad de estados de frecuencia disponibles (sin contar el estado OFF). */
 #define CANT_ESTADOS_FREC         5U
 
-/** Numero de trigger de software usado para disparar el ADC0. */
+/** Mascara para el Trigger 0*/
 #define ADC_SW_TRIGGER_ID         1U
 
 /** Indice de resultado leido del FIFO del ADC. */
