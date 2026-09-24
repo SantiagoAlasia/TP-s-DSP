@@ -8,4 +8,4 @@
 ../board/pin_mux.c:518:6:BOARD_InitLEDsPins	32	static
 ../board/pin_mux.c:640:6:BOARD_InitBUTTONsPins	24	static
 ../board/pin_mux.c:732:6:BOARD_InitADCPins	8	static
-../board/pin_mux.c:777:6:BOARD_InitDACPins	8	static
+../board/pin_mux.c:765:6:BOARD_InitDACPins	8	static

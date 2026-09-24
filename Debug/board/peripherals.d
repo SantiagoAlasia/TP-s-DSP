@@ -96,10 +96,10 @@ board/peripherals.o board/peripherals.d: ../board/peripherals.c \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_gpio.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_ctimer.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_clock.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_spc.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_vref.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_dac.h
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_dac.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h
 ../board/peripherals.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_common.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/device/fsl_device_registers.h:
@@ -197,7 +197,7 @@ board/peripherals.o board/peripherals.d: ../board/peripherals.c \
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_gpio.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_ctimer.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_clock.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_spc.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_vref.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_dac.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h:

@@ -98,10 +98,10 @@ source/TP1.o source/TP1.d: ../source/TP1.c \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/board/peripherals.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_ctimer.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_clock.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_spc.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_vref.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_dac.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/board/pin_mux.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/board/clock_config.h \
  /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math.h \
@@ -239,10 +239,10 @@ source/TP1.o source/TP1.d: ../source/TP1.c \
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/board/peripherals.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_ctimer.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_clock.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_spc.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_vref.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_dac.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_lpadc.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/board/pin_mux.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/board/clock_config.h:
 /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math.h:

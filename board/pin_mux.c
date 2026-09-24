@@ -717,8 +717,8 @@ void BOARD_InitBUTTONsPins(void)
 BOARD_InitADCPins:
 - options: {callFromInitBoot: 'true', coreID: cm33_core0, enableClock: 'true'}
 - pin_list:
-  - {pin_num: M4, peripheral: ADC1, signal: 'A, 23', pin_signal: PIO1_23/FC4_P3/CT_INP15/SCT0_OUT5/FLEXIO0_D31/SMARTDMA_PIO19/ADC1_A23}
-  - {pin_num: C9, peripheral: CTIMER0, signal: 'MATCH, 3', pin_signal: PIO0_19/WUU0_IN3/EWM0_OUT_b/FC0_P3/CT0_MAT3/FLEXIO0_D3/HSCMP1_OUT/TSI0_CH14/ADC0_A11}
+  - {pin_num: P3, peripheral: ADC0, signal: 'A, 0', pin_signal: ADC0_A0}
+  - {pin_num: B6, peripheral: CTIMER0, signal: 'MATCH, 0', pin_signal: PIO0_24/FC1_P0/CT0_MAT0/ADC0_B16}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -733,28 +733,16 @@ void BOARD_InitADCPins(void)
 {
     /* Enables the clock for PORT0 controller: Enables clock */
     CLOCK_EnableClock(kCLOCK_Port0);
-    /* Enables the clock for PORT1: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Port1);
 
-    /* PORT0_19 (pin C9) is configured as CT0_MAT3 */
-    PORT_SetPinMux(PORT0, 19U, kPORT_MuxAlt4);
+    /* PORT0_24 (pin B6) is configured as CT0_MAT0 */
+    PORT_SetPinMux(PORT0, 24U, kPORT_MuxAlt4);
 
-    PORT0->PCR[19] = ((PORT0->PCR[19] &
+    PORT0->PCR[24] = ((PORT0->PCR[24] &
                        /* Mask bits to zero which are setting */
                        (~(PORT_PCR_IBE_MASK)))
 
                       /* Input Buffer Enable: Enables. */
                       | PORT_PCR_IBE(PCR_IBE_ibe1));
-
-    /* PORT1_23 (pin M4) is configured as ADC1_A23 */
-    PORT_SetPinMux(PORT1, 23U, kPORT_MuxAlt0);
-
-    PORT1->PCR[23] = ((PORT1->PCR[23] &
-                       /* Mask bits to zero which are setting */
-                       (~(PORT_PCR_IBE_MASK)))
-
-                      /* Input Buffer Enable: Disables. */
-                      | PORT_PCR_IBE(PCR_IBE_ibe0));
 }
 
 /* clang-format off */

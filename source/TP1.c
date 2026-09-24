@@ -11,10 +11,12 @@
  *
  * Digitaliza una señal analógica a distintas frecuencias de muestreo
  * (8K/16K/22K/44K/48K S/s), almacenando las muestras en un buffer
- * circular de 512 posiciones en formato Q15, y reproduce la señal
- * a través del DAC leyendo de ese mismo buffer. El cambio de
- * frecuencia y el Run/Stop se controlan con botones de la placa;
- * el estado activo se indica con el LED RGB.
+ * circular de 512 posiciones en formato Q15.
+ *
+ * Ademas, reproduce la señal almacenada en dicho buffer a través del DAC.
+ *
+ * El cambio de frecuencia de muestreo y el Run/Stop se controlan con botones de la placa
+ * y se simboliza el estado activo se indica con el LED RGB.
  */
 
 #include <stdio.h>
@@ -41,7 +43,7 @@
 /** Cantidad de estados de frecuencia disponibles (sin contar el estado OFF). */
 #define CANT_ESTADOS_FREC         5U
 
-/** Numero de trigger de software usado para disparar el ADC1. */
+/** Numero de trigger de software usado para disparar el ADC0. */
 #define ADC_SW_TRIGGER_ID         1U
 
 /** Indice de resultado leido del FIFO del ADC. */
@@ -58,7 +60,7 @@
 
 /**
  * Estados de la maquina de estados principal.
- * ESTADO_OFF representa ADC apagado y LEDs apagados;
+ * ESTADO_OFF representa ADC apagado, LEDs apagados y DAC funcionando;
  * los demas representan una frecuencia de muestreo y color de LED distintos.
  */
 typedef enum
@@ -163,12 +165,12 @@ void actualizar_frecuencia_muestreo(void)
         return;
     }
 
-    ctimer_match_config_t match_config = CTIMER0_Match_3_config;
+    ctimer_match_config_t match_config = CTIMER0_Match_0_config;
     match_config.matchValue = match_values[f_estado - 1];
 
     CTIMER_StopTimer(CTIMER0_PERIPHERAL);
     CTIMER0_PERIPHERAL->TC = 0U;   // Reinicio del contador
-    CTIMER_SetupMatch(CTIMER0_PERIPHERAL, CTIMER0_MATCH_3_CHANNEL, &match_config);
+    CTIMER_SetupMatch(CTIMER0_PERIPHERAL, CTIMER0_MATCH_0_CHANNEL, &match_config);
     CTIMER_StartTimer(CTIMER0_PERIPHERAL);
 
     #if MODO_DEBUG
@@ -263,7 +265,7 @@ void GPIO0_INT_0_IRQHANDLER(void)
 /**
  * @brief Rutina de interrupcion de match del CTIMER0.
  *
- * Dispara la conversion del ADC1 por software y ademas saca del buffer
+ * Dispara la conversion del ADC0 por software y ademas saca del buffer
  * circular la proxima muestra pendiente para enviarla al DAC.
  *
  * @param flags Flags de interrupcion del CTIMER.
@@ -272,8 +274,8 @@ void CTIMER0_Callback(uint32_t flags)
 {
     (void)flags;
 
-    /* Disparo la conversion del ADC1 */
-    LPADC_DoSoftwareTrigger(ADC1, ADC_SW_TRIGGER_ID);
+    /* Disparo la conversion del ADC0 */
+    LPADC_DoSoftwareTrigger(ADC0, ADC_SW_TRIGGER_ID);
 
     /* Saco del buffer la proxima muestra pendiente y la envio al DAC */
     q15_t valor_buffer = *ptr_buffer_lectura;
@@ -289,26 +291,26 @@ void CTIMER0_Callback(uint32_t flags)
 }
 
 /**
- * @brief Rutina de interrupcion de fin de conversion del ADC1.
+ * @brief Rutina de interrupcion de fin de conversion del ADC0.
  *
  * Si f_estado != ESTADO_OFF, convierte el resultado a formato Q15 y lo
  * guarda en la siguiente posicion del buffer circular.
  */
-void ADC1_IRQHANDLER(void)
+void ADC0_IRQHANDLER(void)
 {
     uint32_t trigger_status_flag;
     uint32_t status_flag;
     static lpadc_conv_result_t resultado_conversion;
 
-    trigger_status_flag = LPADC_GetTriggerStatusFlags(ADC1_PERIPHERAL);
-    status_flag = LPADC_GetStatusFlags(ADC1_PERIPHERAL);
+    trigger_status_flag = LPADC_GetTriggerStatusFlags(ADC0_PERIPHERAL);
+    status_flag = LPADC_GetStatusFlags(ADC0_PERIPHERAL);
 
-    LPADC_ClearTriggerStatusFlags(ADC1_PERIPHERAL, trigger_status_flag);
-    LPADC_ClearStatusFlags(ADC1_PERIPHERAL, status_flag);
+    LPADC_ClearTriggerStatusFlags(ADC0_PERIPHERAL, trigger_status_flag);
+    LPADC_ClearStatusFlags(ADC0_PERIPHERAL, status_flag);
 
     if (f_estado != ESTADO_OFF)
     {
-        LPADC_GetConvResult(ADC1, &resultado_conversion, ADC_FIFO_RESULT_INDEX);
+        LPADC_GetConvResult(ADC0, &resultado_conversion, ADC_FIFO_RESULT_INDEX);
 
         *ptr_buffer_escritura = adc_a_q15(resultado_conversion.convValue);
         ptr_buffer_escritura++;
