@@ -1,5 +1,5 @@
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_common_arm.h:983:24:DisableGlobalIRQ	16	static
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_common_arm.h:1009:20:EnableGlobalIRQ	24	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_common_arm.h:983:24:DisableGlobalIRQ	16	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_common_arm.h:1009:20:EnableGlobalIRQ	24	static
 ../component/lists/fsl_component_generic_list.c:31:22:LIST_Error_Check	24	static
 ../component/lists/fsl_component_generic_list.c:79:6:LIST_Init	16	static
 ../component/lists/fsl_component_generic_list.c:102:15:LIST_GetList	16	static

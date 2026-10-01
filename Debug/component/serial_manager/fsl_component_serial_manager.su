@@ -1,5 +1,5 @@
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_common_arm.h:983:24:DisableGlobalIRQ	16	static
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/drivers/fsl_common_arm.h:1009:20:EnableGlobalIRQ	24	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_common_arm.h:983:24:DisableGlobalIRQ	16	static
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/drivers/fsl_common_arm.h:1009:20:EnableGlobalIRQ	24	static
 ../component/serial_manager/fsl_component_serial_manager.c:441:32:SerialManager_StartWriting	32	static
 ../component/serial_manager/fsl_component_serial_manager.c:503:32:SerialManager_StartReading	32	static
 ../component/serial_manager/fsl_component_serial_manager.c:1278:32:SerialManager_Write	32	static

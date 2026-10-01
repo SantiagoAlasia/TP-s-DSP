@@ -2,18 +2,18 @@ CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.o \
  CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.d: \
  ../CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.c \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_boolean_distance.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/distance_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_compiler.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_gcc.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_memory.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/none.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/utils.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/statistics_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/basic_math_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/distance_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_compiler.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_gcc.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_memory.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/none.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/utils.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/statistics_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/basic_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_functions.h \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_boolean_distance_template.h \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_braycurtis_distance_f32.c \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_canberra_distance_f32.c \
@@ -38,22 +38,22 @@ CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.o \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_sokalsneath_distance.c \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_yule_distance.c \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_dtw_distance_f32.c \
- /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_utils.h \
+ /home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_utils.h \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_dtw_path_f32.c \
  ../CMSIS/DSP/Source/DistanceFunctions/arm_dtw_init_window_q7.c
 ../CMSIS/DSP/Source/DistanceFunctions/arm_boolean_distance.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/distance_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_compiler.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/cmsis_gcc.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_memory.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/arm_math_types.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/none.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/utils.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/statistics_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/basic_math_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/fast_math_functions.h:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/distance_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_compiler.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/cmsis_gcc.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_memory.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/arm_math_types.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/none.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/utils.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/statistics_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/basic_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/fast_math_functions.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_functions.h:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_boolean_distance_template.h:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_braycurtis_distance_f32.c:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_canberra_distance_f32.c:
@@ -78,6 +78,6 @@ CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.o \
 ../CMSIS/DSP/Source/DistanceFunctions/arm_sokalsneath_distance.c:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_yule_distance.c:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_dtw_distance_f32.c:
-/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP1/CMSIS/DSP/Include/dsp/matrix_utils.h:
+/home/santiagoalasia/Documentos/MCUXpresso_25.6.136/workspace/TP-s-DSP/CMSIS/DSP/Include/dsp/matrix_utils.h:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_dtw_path_f32.c:
 ../CMSIS/DSP/Source/DistanceFunctions/arm_dtw_init_window_q7.c:

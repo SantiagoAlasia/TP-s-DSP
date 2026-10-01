@@ -404,8 +404,8 @@ void BOARD_BootClockFROHF144M(void);
 #define BOARD_BOOTCLOCKPLL150M_ROSC_CLOCK                 0U  /*!< ROSC clock frequency: 0Hz */
 
 /* Clock outputs (values are in Hz): */
-#define BOARD_BOOTCLOCKPLL150M_ADC0_CLOCK             0UL            /* Clock consumers of ADC0_clock output : ADC0 */
-#define BOARD_BOOTCLOCKPLL150M_ADC1_CLOCK             48000000UL     /* Clock consumers of ADC1_clock output : ADC1 */
+#define BOARD_BOOTCLOCKPLL150M_ADC0_CLOCK             48000000UL     /* Clock consumers of ADC0_clock output : ADC0 */
+#define BOARD_BOOTCLOCKPLL150M_ADC1_CLOCK             0UL            /* Clock consumers of ADC1_clock output : ADC1 */
 #define BOARD_BOOTCLOCKPLL150M_CLK16K0_TOVBAT_CLOCK   0UL            /* Clock consumers of CLK16K0_toVBAT_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_CLK16K1_TOVSYS_CLOCK   0UL            /* Clock consumers of CLK16K1_toVSYS_clock output : CMP0, CMP1, CMP2, LPTMR0, LPTMR1 */
 #define BOARD_BOOTCLOCKPLL150M_CLK16K2_TOWAKE_CLOCK   0UL            /* Clock consumers of CLK16K2_toWAKE_clock output : N/A */
