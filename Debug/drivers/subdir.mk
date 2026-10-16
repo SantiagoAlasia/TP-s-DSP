@@ -16,6 +16,13 @@ C_SRCS += \
 ../drivers/fsl_lpi2c.c \
 ../drivers/fsl_lpspi.c \
 ../drivers/fsl_lpuart.c \
+../drivers/fsl_powerquad_basic.c \
+../drivers/fsl_powerquad_cmsis.c \
+../drivers/fsl_powerquad_data.c \
+../drivers/fsl_powerquad_filter.c \
+../drivers/fsl_powerquad_math.c \
+../drivers/fsl_powerquad_matrix.c \
+../drivers/fsl_powerquad_transform.c \
 ../drivers/fsl_reset.c \
 ../drivers/fsl_spc.c \
 ../drivers/fsl_vref.c 
@@ -33,6 +40,13 @@ C_DEPS += \
 ./drivers/fsl_lpi2c.d \
 ./drivers/fsl_lpspi.d \
 ./drivers/fsl_lpuart.d \
+./drivers/fsl_powerquad_basic.d \
+./drivers/fsl_powerquad_cmsis.d \
+./drivers/fsl_powerquad_data.d \
+./drivers/fsl_powerquad_filter.d \
+./drivers/fsl_powerquad_math.d \
+./drivers/fsl_powerquad_matrix.d \
+./drivers/fsl_powerquad_transform.d \
 ./drivers/fsl_reset.d \
 ./drivers/fsl_spc.d \
 ./drivers/fsl_vref.d 
@@ -50,6 +64,13 @@ OBJS += \
 ./drivers/fsl_lpi2c.o \
 ./drivers/fsl_lpspi.o \
 ./drivers/fsl_lpuart.o \
+./drivers/fsl_powerquad_basic.o \
+./drivers/fsl_powerquad_cmsis.o \
+./drivers/fsl_powerquad_data.o \
+./drivers/fsl_powerquad_filter.o \
+./drivers/fsl_powerquad_math.o \
+./drivers/fsl_powerquad_matrix.o \
+./drivers/fsl_powerquad_transform.o \
 ./drivers/fsl_reset.o \
 ./drivers/fsl_spc.o \
 ./drivers/fsl_vref.o 
@@ -67,7 +88,7 @@ drivers/%.o: ../drivers/%.c drivers/subdir.mk
 clean: clean-drivers
 
 clean-drivers:
-	-$(RM) ./drivers/fsl_clock.d ./drivers/fsl_clock.o ./drivers/fsl_common.d ./drivers/fsl_common.o ./drivers/fsl_common_arm.d ./drivers/fsl_common_arm.o ./drivers/fsl_ctimer.d ./drivers/fsl_ctimer.o ./drivers/fsl_dac.d ./drivers/fsl_dac.o ./drivers/fsl_gpio.d ./drivers/fsl_gpio.o ./drivers/fsl_inputmux.d ./drivers/fsl_inputmux.o ./drivers/fsl_lpadc.d ./drivers/fsl_lpadc.o ./drivers/fsl_lpflexcomm.d ./drivers/fsl_lpflexcomm.o ./drivers/fsl_lpi2c.d ./drivers/fsl_lpi2c.o ./drivers/fsl_lpspi.d ./drivers/fsl_lpspi.o ./drivers/fsl_lpuart.d ./drivers/fsl_lpuart.o ./drivers/fsl_reset.d ./drivers/fsl_reset.o ./drivers/fsl_spc.d ./drivers/fsl_spc.o ./drivers/fsl_vref.d ./drivers/fsl_vref.o
+	-$(RM) ./drivers/fsl_clock.d ./drivers/fsl_clock.o ./drivers/fsl_common.d ./drivers/fsl_common.o ./drivers/fsl_common_arm.d ./drivers/fsl_common_arm.o ./drivers/fsl_ctimer.d ./drivers/fsl_ctimer.o ./drivers/fsl_dac.d ./drivers/fsl_dac.o ./drivers/fsl_gpio.d ./drivers/fsl_gpio.o ./drivers/fsl_inputmux.d ./drivers/fsl_inputmux.o ./drivers/fsl_lpadc.d ./drivers/fsl_lpadc.o ./drivers/fsl_lpflexcomm.d ./drivers/fsl_lpflexcomm.o ./drivers/fsl_lpi2c.d ./drivers/fsl_lpi2c.o ./drivers/fsl_lpspi.d ./drivers/fsl_lpspi.o ./drivers/fsl_lpuart.d ./drivers/fsl_lpuart.o ./drivers/fsl_powerquad_basic.d ./drivers/fsl_powerquad_basic.o ./drivers/fsl_powerquad_cmsis.d ./drivers/fsl_powerquad_cmsis.o ./drivers/fsl_powerquad_data.d ./drivers/fsl_powerquad_data.o ./drivers/fsl_powerquad_filter.d ./drivers/fsl_powerquad_filter.o ./drivers/fsl_powerquad_math.d ./drivers/fsl_powerquad_math.o ./drivers/fsl_powerquad_matrix.d ./drivers/fsl_powerquad_matrix.o ./drivers/fsl_powerquad_transform.d ./drivers/fsl_powerquad_transform.o ./drivers/fsl_reset.d ./drivers/fsl_reset.o ./drivers/fsl_spc.d ./drivers/fsl_spc.o ./drivers/fsl_vref.d ./drivers/fsl_vref.o
 
 .PHONY: clean-drivers
 
