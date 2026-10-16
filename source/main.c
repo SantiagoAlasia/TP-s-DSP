@@ -16,9 +16,8 @@
  *     • Salida:  Buffer de almacenamiento procesado para lectura por DAC.
  * - Control e Interfaz:
  *     • SW2: Conmutación de tasa de muestreo.
- *     • SW3: Selección dinámica del filtro digital aplicado. (o bypass)
- *     • Touch Pad: Run/Stop del proceso de adquisición y filtrado.
- *     • LED RGB: Visualización del estado del sistema.
+ *     • SW3: Selección dinámica del filtro digital aplicado, bypass o stop.
+ *     • LED RGB: Visualización de la frecuencia de muestreo.
  * ============================================================================
  */
 
@@ -31,8 +30,11 @@
 #include "fsl_debug_console.h"
 #include "fsl_lpadc.h"
 #include "fsl_dac.h"
-#include "fsl_powerquad.h"
-#include "fsl_powerquad_cmsis.h"
+//#include "fsl_powerquad.h"
+//#include "fsl_powerquad_cmsis.h"
+#include "fir_filter.h"
+
+#define MODO_DEBUG 0
 
 /** Cantidad de muestras del buffer circular. */
 #define BUFFER_SIZE               512U
@@ -67,7 +69,7 @@ q15_t *ptr_buffer_escritura_out = buffer_out;
 
 /** Instancia del filtro (CMSIS-DSP / PowerQuad).*/
 static arm_fir_instance_q15 fir_inst;
-q15_t fir_state[NUM_TAPS_PB_8K];
+q15_t fir_state[NUM_TAPS_PB_8K + BLOCK_SIZE - 1U];
 
 /*
  * Prototipos de funciones
@@ -155,6 +157,7 @@ void CTIMER0_Callback(uint32_t flags)
     }
 
     uint16_t valor_dac = q15_a_dac12(valor_buffer);
+
     DAC_SetData(DAC0, valor_dac);
 }
 
@@ -163,23 +166,25 @@ void CTIMER0_Callback(uint32_t flags)
  */
 void ADC0_IRQHANDLER(void)
 {
-    uint32_t trigger_status_flag;
-    uint32_t status_flag;
+	uint32_t trigger_status_flag;
+	uint32_t status_flag;
     static lpadc_conv_result_t resultado_conversion;
 
-    trigger_status_flag = LPADC_GetTriggerStatusFlags(ADC0);
-    status_flag = LPADC_GetStatusFlags(ADC0);
+    trigger_status_flag = LPADC_GetTriggerStatusFlags(ADC0_PERIPHERAL);
+	status_flag = LPADC_GetStatusFlags(ADC0_PERIPHERAL);
 
-    LPADC_ClearTriggerStatusFlags(ADC0, trigger_status_flag);
-    LPADC_ClearStatusFlags(ADC0, status_flag);
-
+	LPADC_ClearTriggerStatusFlags(ADC0_PERIPHERAL, trigger_status_flag);
+	LPADC_ClearStatusFlags(ADC0_PERIPHERAL, status_flag);
 
     LPADC_GetConvResult(ADC0, &resultado_conversion, ADC_FIFO_RESULT_INDEX);
 
     /* Muestra cruda en el buffer de entrada */
     *ptr_buffer_in = adc_a_q15(resultado_conversion.convValue);
 
+    //PRINTF("interrupcion ADC");
     arm_fir_q15(&fir_inst, ptr_buffer_in, ptr_buffer_escritura_out, 1U);
+
+    //*ptr_buffer_escritura_out = *ptr_buffer_in;
 
     ptr_buffer_in++;
     ptr_buffer_escritura_out++;
@@ -187,21 +192,21 @@ void ADC0_IRQHANDLER(void)
     /* Apuntamos al inicio de los buffers*/
     if (ptr_buffer_in >= (buffer_in + BUFFER_SIZE))
     {
-    	#if MODO_DEBUG
-        	PRINTF("Ultima Dir de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
-      	#endif
+    	//#if MODO_DEBUG
+        	//PRINTF("Ultima Dir de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
+      	//#endif
 
-        ptr_buffer_in = buffer_in;
+    	ptr_buffer_in = buffer_in;
         ptr_buffer_escritura_out = buffer_out;
 
-        #if MODO_DEBUG
-           PRINTF("Dir inicial de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
-        #endif
+        //#if MODO_DEBUG
+        //   PRINTF("Dir inicial de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
+        //#endif
     }
 
-    #if MODO_DEBUG
-    	PRINTF("Conversion: %d\r\n", *(ptr_buffer_in - 1));
-    #endif
+    //#if MODO_DEBUG
+    	//PRINTF("Conversion: %d\r\n", *(ptr_buffer_in - 1));
+    //#endif
 
     /* Errata ARM 838869 (Cortex-M4/M4F): posible vectorizacion incorrecta de
      * interrupcion en un store immediate que se solapa con el retorno. */
@@ -210,25 +215,26 @@ void ADC0_IRQHANDLER(void)
 #endif
 }
 
-
 /**
  * @brief Punto de entrada de la aplicacion.
  */
 int main(void)
 {
-    BOARD_InitBootPins();
-    BOARD_InitBootClocks();
-    BOARD_InitBootPeripherals();
+	BOARD_InitBootPins();
+	BOARD_InitBootClocks();
+	BOARD_InitBootPeripherals();           /* recién acá arrancan CTIMER y ADC */
 
-    // Al colocarlo aca nos aseguramos de instanciar antes de que algun periferico pueda interumpir el ciclo de ejecucion.
-    //PQ_Init(POWERQUAD);
-    //arm_fir_init_q15(&fir_inst, NUM_TAPS_PB_8K, (q15_t *)pb_8k, fir_state, 1U);
+	//PQ_Init(POWERQUAD);                   /* después de los clocks, antes de los periféricos */
+	if (arm_fir_init_q15(&fir_inst, NUM_TAPS_PB_8K, (q15_t *)pb_8k, fir_state, 1U) != ARM_MATH_SUCCESS)
+	{
+	    while (1) {}                       /* init fallido: parar acá en vez de filtrar con basura */
+	}
+
+    prender_leds();
 
 #ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
     BOARD_InitDebugConsole();
 #endif
-
-    prender_leds();
 
     while (1) {}
 
