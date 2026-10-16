@@ -22,6 +22,7 @@
  * ============================================================================
  */
 
+#include <filtros_fir.h>
 #include <stdio.h>
 #include "board.h"
 #include "peripherals.h"
@@ -30,7 +31,9 @@
 #include "arm_math.h"
 #include "fsl_debug_console.h"
 #include "fsl_lpadc.h"
-
+#include "fsl_dac.h"
+#include "fsl_powerquad.h"
+#include "fsl_powerquad_cmsis.h"
 
 /** Cantidad de muestras del buffer circular. */
 #define BUFFER_SIZE               512U
@@ -56,13 +59,16 @@ q15_t buffer_in[BUFFER_SIZE];
 /** Buffer circular de salida, muestras en formato Q15. */
 q15_t buffer_out[BUFFER_SIZE];
 
-/** Punteros para el uso del buffer de etrada. */
-q15_t *ptr_buffer_escritura_in = buffer_in;
-q15_t *ptr_buffer_lectura_in = buffer_in;
+/** Puntero para el uso del buffer de entrada. */
+q15_t *ptr_buffer_in = buffer_in;
 
 /** Punteros para el uso del buffer de salida. */
-q15_t *ptr_buffer_escritura_out = buffer_out;
 q15_t *ptr_buffer_lectura_out = buffer_out;
+q15_t *ptr_buffer_escritura_out = buffer_out;
+
+/** Instancia del filtro (CMSIS-DSP / PowerQuad).*/
+static arm_fir_instance_q15 fir_inst;
+q15_t fir_state[NUM_TAPS_PB_8K];
 
 /*
  * Prototipos de funciones
@@ -162,33 +168,40 @@ void ADC0_IRQHANDLER(void)
     uint32_t status_flag;
     static lpadc_conv_result_t resultado_conversion;
 
-    trigger_status_flag = LPADC_GetTriggerStatusFlags(ADC0_PERIPHERAL);
-    status_flag = LPADC_GetStatusFlags(ADC0_PERIPHERAL);
+    trigger_status_flag = LPADC_GetTriggerStatusFlags(ADC0);
+    status_flag = LPADC_GetStatusFlags(ADC0);
 
-    LPADC_ClearTriggerStatusFlags(ADC0_PERIPHERAL, trigger_status_flag);
-    LPADC_ClearStatusFlags(ADC0_PERIPHERAL, status_flag);
+    LPADC_ClearTriggerStatusFlags(ADC0, trigger_status_flag);
+    LPADC_ClearStatusFlags(ADC0, status_flag);
 
 
     LPADC_GetConvResult(ADC0, &resultado_conversion, ADC_FIFO_RESULT_INDEX);
 
-    *ptr_buffer_escritura_in = adc_a_q15(resultado_conversion.convValue);
-    ptr_buffer_escritura_in++;
+    /* Muestra cruda en el buffer de entrada */
+    *ptr_buffer_in = adc_a_q15(resultado_conversion.convValue);
 
-    if (ptr_buffer_escritura_in >= (buffer_in + BUFFER_SIZE))
+    arm_fir_q15(&fir_inst, ptr_buffer_in, ptr_buffer_escritura_out, 1U);
+
+    ptr_buffer_in++;
+    ptr_buffer_escritura_out++;
+
+    /* Apuntamos al inicio de los buffers*/
+    if (ptr_buffer_in >= (buffer_in + BUFFER_SIZE))
     {
     	#if MODO_DEBUG
-        	PRINTF("Ultima Dir de ptr_buffer: %p\r\n", (void*)ptr_buffer_escritura_in);
+        	PRINTF("Ultima Dir de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
       	#endif
 
-        ptr_buffer_escritura_in = buffer_in;
+        ptr_buffer_in = buffer_in;
+        ptr_buffer_escritura_out = buffer_out;
 
         #if MODO_DEBUG
-           PRINTF("Dir inicial de ptr_buffer: %p\r\n", (void*)ptr_buffer_escritura_in);
+           PRINTF("Dir inicial de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
         #endif
     }
 
     #if MODO_DEBUG
-    	PRINTF("Conversion: %d\r\n", *(ptr_buffer_escritura_in - 1));
+    	PRINTF("Conversion: %d\r\n", *(ptr_buffer_in - 1));
     #endif
 
     /* Errata ARM 838869 (Cortex-M4/M4F): posible vectorizacion incorrecta de
@@ -198,6 +211,7 @@ void ADC0_IRQHANDLER(void)
 #endif
 }
 
+
 /**
  * @brief Punto de entrada de la aplicacion.
  */
@@ -206,6 +220,10 @@ int main(void)
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
     BOARD_InitBootPeripherals();
+
+    // Al colocarlo aca nos aseguramos de instanciar antes de que algun periferico pueda interumpir el ciclo de ejecucion.
+    //PQ_Init(POWERQUAD);
+    //arm_fir_init_q15(&fir_inst, NUM_TAPS_PB_8K, (q15_t *)pb_8k, fir_state, 1U);
 
 #ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
     BOARD_InitDebugConsole();
