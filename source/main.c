@@ -30,14 +30,28 @@
 #include "fsl_debug_console.h"
 #include "fsl_lpadc.h"
 #include "fsl_dac.h"
-//#include "fsl_powerquad.h"
-//#include "fsl_powerquad_cmsis.h"
 #include "fir_filter.h"
 
-#define MODO_DEBUG 0
+//#include "fsl_powerquad.h"        Agregar si usamos el hardware
+//#include "fsl_powerquad_cmsis.h"  Agregar si usamos el hardware
+
+/* Modo Debug */
+//#define MODO_DEBUG                1   // 1 = imprime por PRINTF, 0 = no imprime nada
 
 /** Cantidad de muestras del buffer circular. */
 #define BUFFER_SIZE               512U
+
+/** Cantidad de estados disponibles. */
+#define CANT_FREC                 5U
+
+/** Cantidad de modos disponibles. */
+#define CANT_MODOS                6U
+
+/** Pin del boton Run/Stop (SW3) dentro del puerto GPIO0. */
+#define PIN_START_STOP            6U
+
+/** Pin del boton de cambio de frecuencia (SW2) dentro del puerto GPIO0. */
+#define PIN_SWITCH_FREC           23U
 
 /** Mascara para el Trigger 0*/
 #define ADC_SW_TRIGGER_ID         1U
@@ -54,6 +68,37 @@
 #define DAC12_OFFSET              2048
 #define Q15_TO_DAC12_SHIFT        4U
 
+/**
+ * Frecuencias de muestreo posibles.
+ */
+typedef enum
+{
+    FREC_8K    = 0,  /* 8  kS/s - LED Rojo*/
+    FREC_16K   = 1,  /* 16 kS/s - LED Verde */
+    FREC_22K   = 2,  /* 22 kS/s - LED Azul */
+    FREC_44K   = 3,  /* 44 kS/s - LED Rojo + Verde */
+    FREC_48K   = 4   /* 48 kS/s - LED Verde + Azul */
+} frec_muestreo_t;
+
+/** Frecuencia actual. */
+frec_muestreo_t f_frec = FREC_8K;
+
+/**
+ * Modo de operacion posible.
+ */
+typedef enum
+{
+    MODO_OFF      = 1,  /* Adquisicion OFF + Filtrado OFF + DAC ON*/
+    MODO_LPF      = 2,  /* Filtro Pasa Bajo*/
+    MODO_HPF      = 3,  /* Filtro Pasa Alto */
+    MODO_BPF      = 4,  /* Filtro Pasa Banda */
+    MODO_BSF      = 5,  /* Filtro Elimina Banda */
+    MODO_Bypass   = 6   /* Bypass (No se aplican filtros)*/
+} modo_muestreo_t;
+
+/** Modo de operacion actual. */
+modo_muestreo_t f_modo = MODO_OFF;
+
 /** Buffer circular de entrada, muestras en formato Q15. */
 q15_t buffer_in[BUFFER_SIZE];
 
@@ -67,25 +112,139 @@ q15_t *ptr_buffer_in = buffer_in;
 q15_t *ptr_buffer_lectura_out = buffer_out;
 q15_t *ptr_buffer_escritura_out = buffer_out;
 
-/** Instancia del filtro (CMSIS-DSP / PowerQuad).*/
+/** Instancia del filtro. */
 static arm_fir_instance_q15 fir_inst;
-q15_t fir_state[NUM_TAPS_PB_8K + BLOCK_SIZE - 1U];
+
+static q15_t fir_state[FIR_STATE_MAX];
+
+/**
+ * Valores de matchValue del CTIMER0 para cada frecuencia.
+ */
+const uint32_t match_values[CANT_FREC] = {124U, 62U, 44U, 22U, 20U};
 
 /*
  * Prototipos de funciones
  */
 void prender_leds(void);
+void actualizar_frecuencia_muestreo(void);
+void actualizar_modo_muestreo(void);
 q15_t adc_a_q15(uint16_t valor_adc);
 uint16_t q15_a_dac12(q15_t valor_q15);
 
 /**
- * @brief Enciende el LED RGB con el color correspondiente al estado actual.
+ * @brief Enciende el LED RGB con el color correspondiente a la frecuencia de muestreo actual.
  */
 void prender_leds(void)
 {
-	GPIO_PinWrite(GPIO0, 27, 1);
-    GPIO_PinWrite(GPIO0, 10, 0);
-    GPIO_PinWrite(GPIO1, 2, 1);
+    // Si el modo es apagado => No prendemos ningun LED
+    if(f_modo == MODO_OFF)
+    {
+        GPIO_PinWrite(GPIO0, 27, 1);
+        GPIO_PinWrite(GPIO0, 10, 1);
+        GPIO_PinWrite(GPIO1, 2,  1);
+        return;
+    }else{
+	    switch (f_frec)
+        {
+            case FREC_8K:
+                GPIO_PinWrite(GPIO0, 27, 1);
+                GPIO_PinWrite(GPIO0, 10, 0);
+                GPIO_PinWrite(GPIO1, 2,  1);
+                break;
+
+            case FREC_16K:
+                GPIO_PinWrite(GPIO0, 27, 0);
+                GPIO_PinWrite(GPIO0, 10, 1);
+                GPIO_PinWrite(GPIO1, 2,  1);
+                break;
+
+            case FREC_22K:
+                GPIO_PinWrite(GPIO0, 27, 1);
+                GPIO_PinWrite(GPIO0, 10, 1);
+                GPIO_PinWrite(GPIO1, 2,  0);
+                break;
+
+            case FREC_44K:
+                GPIO_PinWrite(GPIO0, 27, 0);
+                GPIO_PinWrite(GPIO0, 10, 0);
+                GPIO_PinWrite(GPIO1, 2,  1);
+                break;
+
+            case FREC_48K:
+                GPIO_PinWrite(GPIO0, 27, 0);
+                GPIO_PinWrite(GPIO0, 10, 1);
+                GPIO_PinWrite(GPIO1, 2,  0);
+                break;
+
+            default:
+                GPIO_PinWrite(GPIO0, 27, 0);
+                GPIO_PinWrite(GPIO0, 10, 0);
+                GPIO_PinWrite(GPIO1, 2,  0);
+                break;
+        }
+    }
+}
+
+/**
+ * @brief Reconfigura el matchValue del CTIMER0 segun la frecuencia de muestreo actual.
+ */
+void actualizar_frecuencia_muestreo(void)
+{
+    if (f_modo == MODO_OFF){
+        #if MODO_DEBUG
+            PRINTF("ADC detenido (modo OFF): matchValue sin modificar\r\n");
+        #endif
+        return;
+    }
+
+    ctimer_match_config_t match_config = CTIMER0_Match_0_config;
+    match_config.matchValue = match_values[f_frec];
+
+    CTIMER_StopTimer(CTIMER0_PERIPHERAL);
+    CTIMER0_PERIPHERAL->TC = 0U;   // Reinicio del contador
+    CTIMER_SetupMatch(CTIMER0_PERIPHERAL, CTIMER0_MATCH_0_CHANNEL, &match_config);
+    CTIMER_StartTimer(CTIMER0_PERIPHERAL);
+
+    #if MODO_DEBUG
+        PRINTF("Match value actualizado: %lu\r\n", match_values[f_frec]);
+    #endif
+}
+
+// COMPLETAR //
+/**
+ * @brief Modifica el puntero de los coeficientes.
+ */
+void actualizar_modo_muestreo(void) {
+	const fir_coef_t *filtro;
+
+	switch (f_modo) {
+		case MODO_LPF:
+			filtro = &tabla_lpf[f_frec];
+			break;
+		case MODO_HPF:
+			filtro = &tabla_hpf[f_frec];
+			break;
+		case MODO_BPF:
+			filtro = &tabla_bpf[f_frec];
+			break;
+		case MODO_BSF:
+			filtro = &tabla_bsf[f_frec];
+			break;
+		default: /* MODO_OFF, MODO_Bypass: no se usa el filtro */
+			return;
+	}
+
+	/* Que el ADC no use el filtro mientras se reconfigura */
+	NVIC_DisableIRQ(ADC0_IRQn);
+
+	if (arm_fir_init_q15(&fir_inst, filtro->num_taps, (q15_t*) filtro->coef,
+			fir_state, BLOCK_SIZE) != ARM_MATH_SUCCESS) {
+		#if MODO_DEBUG
+	            PRINTF("Fallo la inicializacion del filtro\r\n");
+	    #endif
+	}
+
+	NVIC_EnableIRQ(ADC0_IRQn);
 }
 
 /**
@@ -122,11 +281,42 @@ uint16_t q15_a_dac12(q15_t valor_q15)
 /**
  * @brief Rutina de interrupcion de GPIO0.
  *
- * De momento no hace nada, lo dejo para no modificar la config de perifericos.
+ * Distingue cual de los dos botones genero la interrupcion, actualiza las flags
+ * y refleja el cambio en el LED y en la frecuencia de muestreo.
  */
 void GPIO0_INT_0_IRQHANDLER(void)
 {
     uint32_t pin_flags0 = GPIO_GpioGetInterruptChannelFlags(GPIO0, 0U);
+
+    /* SW3: alterna entre ESTADO_OFF, Bypass y los distintos filtros */
+    if ((pin_flags0 & (1U << PIN_START_STOP)) != 0U)
+    {
+        #if MODO_DEBUG
+            PRINTF("SW3 presionado\r\n");
+        #endif
+
+        f_modo = (modo_muestreo_t)((f_modo % CANT_MODOS) + 1U);
+
+        actualizar_modo_muestreo();
+    }
+
+    /* SW2: Boton de cambio de frecuencia*/
+    if ((pin_flags0 & (1U << PIN_SWITCH_FREC)) != 0U)
+    {
+        #if MODO_DEBUG
+            PRINTF("Boton cambio de frecuencia presionado\r\n");
+        #endif
+
+        if (f_modo != MODO_OFF)
+        {
+            f_frec = (frec_muestreo_t)((f_frec + 1U) % CANT_FREC);
+        }
+
+        actualizar_frecuencia_muestreo();
+        actualizar_modo_muestreo();
+    }
+
+    prender_leds();
 
     GPIO_GpioClearInterruptChannelFlags(GPIO0, pin_flags0, 0U);
 
@@ -147,7 +337,7 @@ void CTIMER0_Callback(uint32_t flags)
     /* Disparo la conversion del ADC0 */
     LPADC_DoSoftwareTrigger(ADC0, ADC_SW_TRIGGER_ID);
 
-    /* Saco del buffer la proxima muestra pendiente y la envio al DAC */
+    /* Saco del buffer de salida la proxima muestra pendiente y la envio al DAC */
     q15_t valor_buffer = *ptr_buffer_lectura_out;
     ptr_buffer_lectura_out++;
 
@@ -163,6 +353,9 @@ void CTIMER0_Callback(uint32_t flags)
 
 /**
  * @brief Rutina de interrupcion de fin de conversion del ADC0.
+ *
+ * Si (f_modo != MODO_OFF && f_modo != MODO_Bypass), convierte el resultado a Q15 y lo guarda en el buffer de entrada.
+ * Luego, aplica el filtro activo y guarda el resultado en el buffer de salida.
  */
 void ADC0_IRQHANDLER(void)
 {
@@ -176,37 +369,45 @@ void ADC0_IRQHANDLER(void)
 	LPADC_ClearTriggerStatusFlags(ADC0_PERIPHERAL, trigger_status_flag);
 	LPADC_ClearStatusFlags(ADC0_PERIPHERAL, status_flag);
 
-    LPADC_GetConvResult(ADC0, &resultado_conversion, ADC_FIFO_RESULT_INDEX);
+    if(f_modo != MODO_OFF){
+        LPADC_GetConvResult(ADC0, &resultado_conversion, ADC_FIFO_RESULT_INDEX);
 
-    /* Muestra cruda en el buffer de entrada */
-    *ptr_buffer_in = adc_a_q15(resultado_conversion.convValue);
+        /* Muestra cruda en el buffer de entrada */
+        *ptr_buffer_in = adc_a_q15(resultado_conversion.convValue);
 
-    //PRINTF("interrupcion ADC");
-    arm_fir_q15(&fir_inst, ptr_buffer_in, ptr_buffer_escritura_out, 1U);
+        if(f_modo == MODO_Bypass){
+            /* Escribimos en el buffer de salida el valor en Q15 sin filtrar */
+            *ptr_buffer_escritura_out = *ptr_buffer_in;
+        }else{
+            /* Filtrado de la muestra obtenida */
+            arm_fir_q15(&fir_inst, ptr_buffer_in, ptr_buffer_escritura_out, 1U);
+        }
 
-    //*ptr_buffer_escritura_out = *ptr_buffer_in;
+        ptr_buffer_in++;
+        ptr_buffer_escritura_out++;
 
-    ptr_buffer_in++;
-    ptr_buffer_escritura_out++;
+        /* Apuntamos al inicio de los buffers*/
+        if (ptr_buffer_in >= (buffer_in + BUFFER_SIZE))
+        {
+    	    #if MODO_DEBUG
+            	PRINTF("Ultima Dir de ptr_buffer_in: %p\r\n", (void*)ptr_buffer_in);
+                PRINTF("Ultima Dir de ptr_buffer_escritura_out %p\r\n", (void*)ptr_buffer_escritura_out);
+      	    #endif
 
-    /* Apuntamos al inicio de los buffers*/
-    if (ptr_buffer_in >= (buffer_in + BUFFER_SIZE))
-    {
-    	//#if MODO_DEBUG
-        	//PRINTF("Ultima Dir de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
-      	//#endif
+    	    ptr_buffer_in = buffer_in;
+            ptr_buffer_escritura_out = buffer_out;
 
-    	ptr_buffer_in = buffer_in;
-        ptr_buffer_escritura_out = buffer_out;
-
-        //#if MODO_DEBUG
-        //   PRINTF("Dir inicial de ptr_buffer: %p\r\n", (void*)ptr_buffer_in);
-        //#endif
+            #if MODO_DEBUG
+                PRINTF("Dir inicial de ptr_buffer_in: %p\r\n", (void*)ptr_buffer_in);
+                PRINTF("Dir inicial de ptr_buffer_escritura_out: %p\r\n", (void*)ptr_buffer_escritura_out);
+            #endif
     }
 
-    //#if MODO_DEBUG
-    	//PRINTF("Conversion: %d\r\n", *(ptr_buffer_in - 1));
-    //#endif
+    #if MODO_DEBUG
+    	PRINTF("Conversion: %d\r\n", *(ptr_buffer_in - 1));
+        PRINTF("Filtrado: %d\r\n", *(ptr_buffer_escritura_out - 1));
+    #endif
+    }
 
     /* Errata ARM 838869 (Cortex-M4/M4F): posible vectorizacion incorrecta de
      * interrupcion en un store immediate que se solapa con el retorno. */
@@ -222,14 +423,9 @@ int main(void)
 {
 	BOARD_InitBootPins();
 	BOARD_InitBootClocks();
-	BOARD_InitBootPeripherals();           /* recién acá arrancan CTIMER y ADC */
+	BOARD_InitBootPeripherals();
 
-	//PQ_Init(POWERQUAD);                   /* después de los clocks, antes de los periféricos */
-	if (arm_fir_init_q15(&fir_inst, NUM_TAPS_PB_8K, (q15_t *)pb_8k, fir_state, 1U) != ARM_MATH_SUCCESS)
-	{
-	    while (1) {}                       /* init fallido: parar acá en vez de filtrar con basura */
-	}
-
+    // Me aseguro que esten apagados todos los leds.
     prender_leds();
 
 #ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
