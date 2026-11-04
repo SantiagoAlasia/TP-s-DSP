@@ -10,7 +10,7 @@
  * @brief   Laboratorio 2 - Filtro FIR con MCXN947.
  *
  * ============================================================================
- * - Muestreo: Digitalización analógica a 8, 16, 22, 44.1 y 48 kSps.
+ * - Muestreo: Digitalización analógica a 8, 16, 22, 44 y 48 kSps.
  * - Buffers:
  *     • Entrada: Buffer circular de 512 muestras en formato Q15.
  *     • Salida:  Buffer de almacenamiento procesado para lectura por DAC.
@@ -133,6 +133,7 @@ uint16_t q15_a_dac12(q15_t valor_q15);
 
 /**
  * @brief Enciende el LED RGB con el color correspondiente a la frecuencia de muestreo actual.
+ * 		  En caso de estar en modo OFF apaga los 3 LEDs.
  */
 void prender_leds(void)
 {
@@ -186,7 +187,8 @@ void prender_leds(void)
 }
 
 /**
- * @brief Reconfigura el matchValue del CTIMER0 segun la frecuencia de muestreo actual.
+ * @brief Siempre que se encuentre en modo != OFF, reconfigura el matchValue del CTIMER0
+ * 		  segun la frecuencia de muestreo actual.
  */
 void actualizar_frecuencia_muestreo(void)
 {
@@ -210,9 +212,8 @@ void actualizar_frecuencia_muestreo(void)
     #endif
 }
 
-// COMPLETAR //
 /**
- * @brief Modifica el puntero de los coeficientes.
+ * @brief Modifica el puntero de los coeficientes y llama a la funcion de la libreria.
  */
 void actualizar_modo_muestreo(void) {
 	const fir_coef_t *filtro;
@@ -296,8 +297,6 @@ void GPIO0_INT_0_IRQHANDLER(void)
         #endif
 
         f_modo = (modo_muestreo_t)((f_modo % CANT_MODOS) + 1U);
-
-        actualizar_modo_muestreo();
     }
 
     /* SW2: Boton de cambio de frecuencia*/
@@ -313,9 +312,10 @@ void GPIO0_INT_0_IRQHANDLER(void)
         }
 
         actualizar_frecuencia_muestreo();
-        actualizar_modo_muestreo();
+
     }
 
+    actualizar_modo_muestreo();
     prender_leds();
 
     GPIO_GpioClearInterruptChannelFlags(GPIO0, pin_flags0, 0U);
