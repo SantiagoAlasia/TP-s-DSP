@@ -151,7 +151,7 @@ instance:
       - 0:
         - matchChannelPrefixId: 'Match_0'
         - matchChannel: 'kCTIMER_Match_0'
-        - matchValueStr: '8000'
+        - matchValueStr: '125'
         - enableCounterReset: 'true'
         - enableCounterStop: 'false'
         - outControl: 'kCTIMER_Output_Toggle'
@@ -173,7 +173,7 @@ const ctimer_config_t CTIMER0_config = {
   .prescale = 149
 };
 const ctimer_match_config_t CTIMER0_Match_0_config = {
-  .matchValue = 7999,
+  .matchValue = 124,
   .enableCounterReset = true,
   .enableCounterStop = false,
   .outControl = kCTIMER_Output_Toggle,
@@ -433,10 +433,10 @@ void BOARD_InitPeripherals(void)
 {
   /* Initialize components */
   GPIO0_init();
-  CTIMER0_init();
   VREF0_init();
   DAC0_init();
   ADC0_init();
+  CTIMER0_init();
 }
 
 /***********************************************************************************************************************
