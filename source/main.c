@@ -30,10 +30,7 @@
 #include "fsl_debug_console.h"
 #include "fsl_lpadc.h"
 #include "fsl_dac.h"
-#include "fir_filter.h"
-
-//#include "fsl_powerquad.h"        Agregar si usamos el hardware
-//#include "fsl_powerquad_cmsis.h"  Agregar si usamos el hardware
+#include "fir_multitasa.h"   /* funcionalidades para los filtros */
 
 /* Modo Debug */
 //#define MODO_DEBUG                1   // 1 = imprime por PRINTF, 0 = no imprime nada
@@ -111,11 +108,6 @@ q15_t *ptr_buffer_in = buffer_in;
 /** Punteros para el uso del buffer de salida. */
 q15_t *ptr_buffer_lectura_out = buffer_out;
 q15_t *ptr_buffer_escritura_out = buffer_out;
-
-/** Instancia del filtro. */
-static arm_fir_instance_q15 fir_inst;
-
-static q15_t fir_state[FIR_STATE_MAX];
 
 /**
  * Valores de matchValue del CTIMER0 para cada frecuencia.
@@ -213,24 +205,17 @@ void actualizar_frecuencia_muestreo(void)
 }
 
 /**
- * @brief Modifica el puntero de los coeficientes y llama a la funcion de la libreria.
+ * @brief Selecciona el filtro multitasa segun el modo y la frecuencia actuales
+ *        y reinicia sus estados. Se llama cada vez que cambia el modo o la fs.
  */
 void actualizar_modo_muestreo(void) {
-	const fir_coef_t *filtro;
+	mt_tipo_t tipo;
 
 	switch (f_modo) {
-		case MODO_LPF:
-			filtro = &tabla_lpf[f_frec];
-			break;
-		case MODO_HPF:
-			filtro = &tabla_hpf[f_frec];
-			break;
-		case MODO_BPF:
-			filtro = &tabla_bpf[f_frec];
-			break;
-		case MODO_BSF:
-			filtro = &tabla_bsf[f_frec];
-			break;
+		case MODO_LPF: tipo = MT_PB;     break;
+		case MODO_HPF: tipo = MT_PA;     break;
+		case MODO_BPF: tipo = MT_PBANDA; break;
+		case MODO_BSF: tipo = MT_EB;     break;
 		default: /* MODO_OFF, MODO_Bypass: no se usa el filtro */
 			return;
 	}
@@ -238,8 +223,8 @@ void actualizar_modo_muestreo(void) {
 	/* Que el ADC no use el filtro mientras se reconfigura */
 	NVIC_DisableIRQ(ADC0_IRQn);
 
-	if (arm_fir_init_q15(&fir_inst, filtro->num_taps, (q15_t*) filtro->coef,
-			fir_state, BLOCK_SIZE) != ARM_MATH_SUCCESS) {
+	/* f_frec (FREC_8K..FREC_48K = 0..4) coincide con el indice de fs de filtros_multitasa.h */
+	if (mt_init((uint8_t) f_frec, tipo) != 0) {
 		#if MODO_DEBUG
 	            PRINTF("Fallo la inicializacion del filtro\r\n");
 	    #endif
@@ -380,7 +365,7 @@ void ADC0_IRQHANDLER(void)
             *ptr_buffer_escritura_out = *ptr_buffer_in;
         }else{
             /* Filtrado de la muestra obtenida */
-            arm_fir_q15(&fir_inst, ptr_buffer_in, ptr_buffer_escritura_out, 1U);
+            *ptr_buffer_escritura_out = mt_procesar(*ptr_buffer_in);
         }
 
         ptr_buffer_in++;
