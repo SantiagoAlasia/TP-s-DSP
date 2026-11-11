@@ -1100,14 +1100,14 @@
                            <setting name="mode" value="kCTIMER_TimerMode"/>
                            <setting name="clockSource" value="FunctionClock"/>
                            <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
-                           <setting name="timerPrescaler" value="150"/>
+                           <setting name="timerPrescaler" value="1"/>
                         </struct>
                         <setting name="EnableTimerInInit" value="true"/>
                         <array name="matchChannels">
                            <struct name="0">
                               <setting name="matchChannelPrefixId" value="Match_0"/>
                               <setting name="matchChannel" value="kCTIMER_Match_0"/>
-                              <setting name="matchValueStr" value="125"/>
+                              <setting name="matchValueStr" value="18749"/>
                               <setting name="enableCounterReset" value="true"/>
                               <setting name="enableCounterStop" value="false"/>
                               <setting name="outControl" value="kCTIMER_Output_Toggle"/>

@@ -145,13 +145,13 @@ instance:
       - mode: 'kCTIMER_TimerMode'
       - clockSource: 'FunctionClock'
       - clockSourceFreq: 'ClocksTool_DefaultInit'
-      - timerPrescaler: '150'
+      - timerPrescaler: '1'
     - EnableTimerInInit: 'true'
     - matchChannels:
       - 0:
         - matchChannelPrefixId: 'Match_0'
         - matchChannel: 'kCTIMER_Match_0'
-        - matchValueStr: '125'
+        - matchValueStr: '18749'
         - enableCounterReset: 'true'
         - enableCounterStop: 'false'
         - outControl: 'kCTIMER_Output_Toggle'
@@ -170,10 +170,10 @@ instance:
 const ctimer_config_t CTIMER0_config = {
   .mode = kCTIMER_TimerMode,
   .input = kCTIMER_Capture_0,
-  .prescale = 149
+  .prescale = 0
 };
 const ctimer_match_config_t CTIMER0_Match_0_config = {
-  .matchValue = 124,
+  .matchValue = 18748,
   .enableCounterReset = true,
   .enableCounterStop = false,
   .outControl = kCTIMER_Output_Toggle,

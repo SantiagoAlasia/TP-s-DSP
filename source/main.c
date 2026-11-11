@@ -112,7 +112,7 @@ q15_t *ptr_buffer_escritura_out = buffer_out;
 /**
  * Valores de matchValue del CTIMER0 para cada frecuencia.
  */
-const uint32_t match_values[CANT_FREC] = {124U, 62U, 44U, 22U, 20U};
+const uint32_t match_values[CANT_FREC] = {18749U, 9374U, 6817U, 3408U, 3124U};
 
 /*
  * Prototipos de funciones
