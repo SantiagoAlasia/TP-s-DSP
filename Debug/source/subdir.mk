@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../source/fir_multitasa.c \
 ../source/main.c \
 ../source/semihost_hardfault.c 
 
 C_DEPS += \
+./source/fir_multitasa.d \
 ./source/main.d \
 ./source/semihost_hardfault.d 
 
 OBJS += \
+./source/fir_multitasa.o \
 ./source/main.o \
 ./source/semihost_hardfault.o 
 
@@ -28,7 +31,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/main.d ./source/main.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
+	-$(RM) ./source/fir_multitasa.d ./source/fir_multitasa.o ./source/main.d ./source/main.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
 
 .PHONY: clean-source
 
