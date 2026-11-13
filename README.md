@@ -1,118 +1,276 @@
-# TP2 - Filtros FIR con MCXN947
+# TP2 – Filtros FIR multitasa en FRDM-MCXN947
 
-Trabajo práctico de la materia **Procesamiento Digital de Señales**. Continuación del TP1: implementa el diseño y la aplicación de filtros digitales FIR, procesados por muestras, sobre la señal adquirida con el ADC del microcontrolador **MCXN947** (placa FRDM-MCXN947), reproduciendo el resultado filtrado a través del DAC.
+## Descripción
 
-## Objetivo
+Este proyecto implementa un sistema de procesamiento digital de señales en tiempo real utilizando el microcontrolador **NXP MCXN947**.
 
-Diseñar e implementar filtros FIR (pasa bajos, pasa altos, pasa banda y elimina banda), aplicándolos por muestras sobre un buffer de 512 posiciones adquirido a las frecuencias de muestreo del Laboratorio 1 (8K, 16K, 22K, 44K y 48K muestras/segundo), y comparar la señal filtrada contra la original (bypass) mediante osciloscopio.
+El sistema adquiere una señal analógica mediante el ADC, la procesa digitalmente utilizando filtros FIR (*Finite Impulse Response*) y envía el resultado a través del DAC.
 
-## Funcionalidades
+Se implementan cuatro tipos de filtros digitales:
 
-- **Adquisición heredada del TP1:** el ADC digitaliza la señal de entrada a las mismas 5 velocidades de muestreo (8K/16K/22K/44K/48K S/s), seleccionables con el botón SW2, indicadas con el LED RGB integrado de la placa.
-- **Buffer de entrada:** 512 muestras en formato Q15, igual que en el TP1.
-- **Filtrado FIR por muestras:** cada muestra adquirida se procesa mediante convolución con los coeficientes del filtro activo, generando la salida en un **buffer distinto al de entrada**.
-- **Selección de modo con el botón Run/Stop (SW3):** reutilizando la misma tecla del TP1, cicla circularmente entre OFF y los 5 modos de salida disponibles (4 filtros + bypass):
+- **Pasa bajos (PB / LPF):** permite el paso de las frecuencias bajas y atenúa las altas.
+- **Pasa altos (PA / HPF):** permite el paso de las frecuencias altas y atenúa las bajas.
+- **Pasa banda (PBanda / BPF):** permite el paso de un rango determinado de frecuencias.
+- **Elimina banda (EB / BSF):** atenúa un rango determinado de frecuencias y permite el paso de las restantes.
 
-$$\text{OFF} \rightarrow \text{Pasa Bajos} \rightarrow \text{Pasa Altos} \rightarrow \text{Pasa Banda} \rightarrow \text{Elimina Banda} \rightarrow \text{Bypass} \rightarrow \text{OFF} \rightarrow ...$$
+Además, el sistema permite seleccionar distintas frecuencias de muestreo y alternar entre los filtros disponibles, el modo bypass y el modo OFF mediante los botones de la placa.
 
-- **Reproducción por DAC:** las muestras del buffer de salida (filtradas o en bypass) se envían al DAC para reconstruir la señal, tal como en el TP1.
+## Características principales
 
-## Indicación visual (dos LEDs RGB independientes)
+- Procesamiento digital de señales en tiempo real.
+- Implementación de filtros FIR en formato de punto fijo **Q15**.
+- Arquitectura de filtros multitasa para reducir el costo computacional.
+- Frecuencias de muestreo configurables: 8, 16, 22, 44 y 48 kHz.
+- Adquisición de muestras mediante ADC.
+- Salida de señal procesada mediante DAC de 12 bits.
+- Uso de interrupciones para gestionar la adquisición, el procesamiento y la salida.
+- Buffers circulares de 512 muestras para entrada y salida.
+- Optimización del procesamiento mediante instrucciones DSP del Cortex-M33.
 
-Como ahora conviven dos variables de estado (frecuencia de muestreo y modo de filtrado), se usan dos LEDs RGB separados para evitar ambigüedad — mismo esquema de colores (primarios y combinados) en ambos, para mantener consistencia visual:
+## Hardware y tecnologías
 
-- **LED RGB integrado de la placa:** indica la frecuencia de muestreo activa, igual que en el TP1.
-- **LED RGB externo (conectado a 3 pines físicos adicionales):** indica el modo de filtrado/bypass activo.
+| Elemento | Descripción |
+|---|---|
+| Microcontrolador | NXP MCXN947 |
+| ADC | LPADC |
+| DAC | DAC de 12 bits |
+| Lenguaje | C |
+| Procesamiento DSP | CMSIS-DSP |
+| Representación numérica | Q15 |
+| Herramienta de diseño de coeficientes | MATLAB |
 
-| Estado de filtro | Color LED RGB externo |
-|:---:|:---:|
-| OFF | Apagado |
-| Pasa Bajos | Rojo |
-| Pasa Altos | Verde |
-| Pasa Banda | Azul |
-| Elimina Banda | Rojo + Verde |
-| Bypass | Verde + Azul |
+## Filtros
 
-## Máquina de estados - Frecuencia de muestreo (heredada del TP1, botón SW2)
+| Filtro | Especificación | Astop |
+|---|---|---|
+| PB | fc = 3600 Hz | 30 dB |
+| PA | fc = 35 Hz | 30 dB |
+| PBanda | 35 Hz a 3500 Hz | 30 dB |
+| EB | fr = 50 Hz, BW = 15 Hz | 25 dB |
 
-| Estado | ADC | Frecuencia | LED RGB integrado |
-|:---:|:---:|:---:|:---:|
-| 0 | OFF | — | Apagado |
-| 1 | ON | 8 kS/s | Rojo |
-| 2 | ON | 16 kS/s | Verde |
-| 3 | ON | 22 kS/s | Azul |
-| 4 | ON | 44 kS/s | Rojo + Verde |
-| 5 | ON | 48 kS/s | Verde + Azul |
+## Cómo se implementan
 
-## Máquina de estados - Modo de filtrado (nueva, botón SW3 / Run-Stop)
+Un FIR directo para bandas de pocos hertz a fs altas necesita miles de coeficientes. Por eso:
 
-| Estado | Modo | LED RGB externo |
-|:---:|:---:|:---:|
-| 0 | OFF | Apagado |
-| 1 | Pasa Bajos (Fc=3600Hz) | Rojo |
-| 2 | Pasa Altos (Fc=35Hz) | Verde |
-| 3 | Pasa Banda (Fc1=35Hz, Fc2=3500Hz) | Azul |
-| 4 | Elimina Banda (Fr=50Hz, BW=15Hz) | Rojo + Verde |
-| 5 | Bypass | Verde + Azul |
+- **PB:** FIR directo a fs.
+- **PA y EB:** `y[n] = x[n-D] - v[n]`, donde `v` sale de un camino angosto que trabaja a 1 kHz:
+  `x → HD → ↓M → G → ↑M → M·HD → v`, con `M = fs / 1000`.
+- **PBanda:** PA seguido de un pasa bajos directo (LPB).
 
-## Filtros a implementar
+Según el script, esto usa unos 2,5 mil coeficientes en total (contra ~31 mil de los FIR
+directos equiripple) y la peor carga estimada de CPU es 63 % (PBanda a 48 kS/s).
 
-| Tipo | Especificación | Atenuación en banda de rechazo |
-|:---:|:---:|:---:|
-| Pasa Bajos | Fc = 3600 Hz | Astop = 30 dB |
-| Pasa Altos | Fc = 35 Hz | Astop = 30 dB |
-| Pasa Banda | Fc1 = 35 Hz, Fc2 = 3500 Hz | Astop = 30 dB |
-| Elimina Banda | Fr = 50 Hz, BW = 15 Hz | Astop = 25 dB |
+## Arquitectura del sistema
 
-## Arquitectura
+El procesamiento de la señal sigue el siguiente recorrido:
 
-La arquitectura utilizada esta detallada en el informe.
-
-## Conversión de formatos
-
-- **ADC → Q15:** igual que en el TP1 — el resultado del ADC (sin signo, centrado en la mitad de escala) se recentra restando el offset correspondiente.
-- **Filtrado FIR:** convolución en formato Q15 utilizando funciones de CMSIS-DSP (`arm_fir_q15` o equivalente).
-- **Q15 → DAC (12 bits):** igual que en el TP1 — reescalado y saturado al rango [0, 4095].
-
-## Hardware utilizado
-
-- Placa **FRDM-MCXN947**
-- Entrada analógica: ADC0, canal A0
-- Botones de usuario de la placa (SW2: cambio de frecuencia — SW3/Run-Stop: cambio de modo de filtrado)
-- LED RGB integrado de la placa (indica frecuencia de muestreo)
-- LED RGB externo, conectado a 3 pines GPIO adicionales + resistencias limitadoras (indica modo de filtrado/bypass)
-
-## Herramientas
-
-- **MCUXpresso IDE** + **MCUXpresso SDK**
-- **Config Tools** (Pins, Clocks, Peripherals) para la configuración gráfica de ADC0, CTIMER0, DAC0 y los pines del LED RGB externo
-- **CMSIS-DSP** (`arm_math.h`) para el tipo de dato Q15 y las funciones de filtrado FIR
-- Herramienta de diseño de filtros (Octave `fdatool`) para obtener los coeficientes de cada filtro a partir de las especificaciones
-
-## Diseño de los filtros
-
-Para cada uno de los 4 filtros requeridos se documenta en el informe:
-- Método de diseño utilizado (ventaneo)
-- Orden del filtro resultante
-- Coeficientes obtenidos, convertidos a formato Q15
-- Respuesta en frecuencia teórica (magnitud) verificando que cumple Astop en la banda de rechazo
-
-## Estructura del repositorio
-
+```text
+       Señal analógica
+              |
+              v
+         +---------+
+         |   ADC   |
+         +---------+
+              |
+              v
+       Conversión a Q15
+              |
+              v
+       +--------------+
+       | Buffer entrada|
+       +--------------+
+              |
+              v
+       +--------------+
+       |  Filtro FIR  |
+       |   multitasa  |
+       +--------------+
+              |
+              v
+       +--------------+
+       | Buffer salida|
+       +--------------+
+              |
+              v
+       +---------+
+       |   DAC   |
+       +---------+
+              |
+              v
+       Señal analógica
 ```
-├── source/
-│   └── TP1.c                # Código principal de la aplicación
-├── board/                     # Configuración de la placa (generado por Config Tools)
-├── drivers/                     # Drivers del SDK utilizados
-└── README.md
+
+El ADC realiza las conversiones de la señal de entrada. Cada muestra se convierte al formato Q15 y se almacena en el buffer de entrada.
+
+A continuación, se aplica el filtro seleccionado y el resultado se guarda en el buffer de salida. Finalmente, el DAC convierte las muestras procesadas nuevamente a una señal analógica.
+
+La adquisición y la salida se coordinan mediante interrupciones del ADC y del CTIMER.
+
+## Frecuencias de muestreo
+
+El sistema permite trabajar con las siguientes frecuencias:
+
+| Índice | Frecuencia |
+|---:|---:|
+| 0 | 8 kHz |
+| 1 | 16 kHz |
+| 2 | 22 kHz |
+| 3 | 44 kHz |
+| 4 | 48 kHz |
+
+La frecuencia de muestreo se modifica mediante el botón **SW2**. Al cambiarla, se actualiza la configuración del temporizador y, cuando corresponde, se reinicializan los estados del filtro con los coeficientes asociados a la nueva frecuencia.
+
+## Modos de funcionamiento
+
+El botón **SW3** permite recorrer los siguientes modos:
+
+| Modo | Descripción |
+|---|---|
+| OFF | Detiene la adquisición y el procesamiento. |
+| Bypass | Envía la señal sin aplicar filtrado. |
+| LPF | Activa el filtro pasa bajos. |
+| HPF | Activa el filtro pasa altos. |
+| BPF | Activa el filtro pasa banda. |
+| BSF | Activa el filtro elimina banda. |
+
+El LED RGB de la placa indica la frecuencia de muestreo seleccionada:
+
+| Frecuencia | Indicador |
+|---|---|
+| 8 kHz | Rojo |
+| 16 kHz | Verde |
+| 22 kHz | Azul |
+| 44 kHz | Rojo + Verde |
+| 48 kHz | Verde + Azul |
+
+En modo OFF, los tres LEDs permanecen apagados.
+
+## Implementación de los filtros FIR
+
+Los filtros FIR calculan cada muestra de salida mediante una suma ponderada de muestras actuales y anteriores:
+
+\[
+y[n] = \sum_{k=0}^{N-1} h[k]\,x[n-k]
+\]
+
+Donde:
+
+- \(x[n]\) representa la muestra de entrada.
+- \(h[k]\) representa los coeficientes del filtro.
+- \(N\) es la cantidad de coeficientes.
+- \(y[n]\) es la muestra de salida.
+
+Los cálculos se realizan utilizando el formato **Q15**, que permite representar valores fraccionarios mediante enteros de 16 bits con signo.
+
+### Procesamiento multitasa
+
+Para los filtros pasa altos, pasa banda y elimina banda se utiliza una arquitectura multitasa que reduce el costo computacional del procesamiento.
+
+La frecuencia interna del camino de banda angosta se establece en 1 kHz. Para ello, se utilizan etapas de diezmado e interpolación con un factor \(M\) que depende de la frecuencia de muestreo seleccionada:
+
+\[
+M = \frac{f_s}{1000}
+\]
+
+La estructura general del camino de banda angosta es:
+
+```text
+                  +----------------------+
+                  |                      |
+                  v                      |
+Entrada ---> Retardo D              Diezmador
+                  |                      |
+                  |                      v
+                  |                 Filtro G
+                  |                      |
+                  |                      v
+                  |                Interpolador
+                  |                      |
+                  |                      v
+                  |                 Filtro HD
+                  |                      |
+                  v                      v
+                  +-------- Resta -------+
+                             |
+                             v
+                         Salida
 ```
+
+En términos de implementación, el filtro HD se utiliza tanto en el diezmador como en el interpolador. El procesamiento de sus productos se distribuye entre las muestras para reducir los picos de carga computacional.
+
+El filtro pasa banda se obtiene aplicando un filtro pasa altos seguido de un filtro pasa bajos adicional.
+
+## Organización de archivos
+
+| Archivo | Responsabilidad |
+|---|---|
+| `main.c` | Inicialización de periféricos, configuración de frecuencias y modos, gestión de botones e interrupciones, adquisición y salida de muestras. |
+| `fir_multitasa.h` | Declaración de la API de los filtros y enumeración de los tipos disponibles. |
+| `fir_multitasa.c` | Implementación del procesamiento FIR muestra a muestra y de la arquitectura multitasa. |
+| `coef_multitasa.h` | Coeficientes FIR, tablas de configuración y parámetros asociados a cada frecuencia de muestreo. |
+
+## Uso en la placa
+
+- **SW3:** cambia el modo: OFF → PB → PA → PBanda → EB → Bypass.
+- **SW2:** cambia la fs: 8 → 16 → 22 → 44 → 48 kS/s.
+- **LED:** el color indica la fs (rojo 8k, verde 16k, azul 22k, amarillo 44k, cian 48k).
+  Apagado en modo OFF.
+- **Entrada:** ADC0_A0 (J4[2]), 0 a 3,3 V. **Salida:** DAC0 (J1[4]).
+
+Después de cambiar de filtro o de fs, la salida tarda hasta ~0,2 s en estabilizarse
+(el filtro empieza con el estado en cero).
+
+### Funciones principales
+
+La interfaz pública del módulo de filtros se encuentra en `fir_multitasa.h`:
+
+```c
+int mt_init(uint8_t idx_fs, mt_tipo_t tipo);
+
+q15_t mt_procesar(q15_t x);
+
+uint32_t mt_retardo_muestras(void);
+```
+
+- **`mt_init()`**: selecciona el filtro y la frecuencia de muestreo. También inicializa los estados internos del procesamiento.
+- **`mt_procesar()`**: procesa una muestra de entrada en formato Q15 y devuelve la muestra filtrada.
+- **`mt_retardo_muestras()`**: devuelve el retardo de grupo del filtro activo, expresado en muestras.
+
+La función `mt_procesar()` debe ejecutarse una vez por cada muestra adquirida.
+
+## Generación de coeficientes
+
+Los coeficientes de los filtros se encuentran definidos en `coef_multitasa.h` y fueron generados mediante el script de MATLAB `disenar_multitasa.m`.
+
+El archivo contiene los coeficientes correspondientes a las cinco frecuencias de muestreo, junto con las tablas de parámetros utilizadas por la implementación.
+
+Los coeficientes se almacenan en formato Q15 y se organizan según el formato requerido por la implementación FIR.
+
+## Compilación y ejecución
+
+El proyecto está desarrollado para el entorno de desarrollo de NXP y utiliza las bibliotecas y configuraciones de periféricos correspondientes al MCXN947.
+
+Para compilar y ejecutar:
+
+1. Abrir el proyecto en el entorno de desarrollo utilizado para el MCXN947.
+2. Verificar que estén disponibles las bibliotecas CMSIS-DSP y los drivers de periféricos de NXP.
+3. Compilar el proyecto.
+4. Descargar el firmware en la placa MCXN947.
+5. Conectar la señal analógica de entrada al canal correspondiente del ADC.
+6. Observar la señal procesada en la salida del DAC.
+
+> **Nota:** la configuración de pines, relojes y periféricos depende de los archivos generados por el proyecto de NXP (`board`, `peripherals`, `pin_mux` y `clock_config`).
+
+## Consideraciones de implementación
+
+- El procesamiento se realiza muestra a muestra.
+- Los estados internos de los filtros se reinician al cambiar su configuración.
+- Los filtros utilizan acumuladores de 64 bits para realizar las operaciones de convolución.
+- Se emplea una historia duplicada de muestras para evitar copiar datos durante el procesamiento FIR.
+- La implementación utiliza instrucciones DSP del Cortex-M33 para optimizar las operaciones de multiplicación y acumulación.
+- Si la inicialización del filtro falla, la función `mt_procesar()` deja pasar la muestra sin filtrar.
 
 ## Informe del Trabajo Práctico
 
+https://docs.google.com/document/d/1ottVzcl4JmBFpiOeFQYr0KK9VTofG4uatPOUq4b3vT8/edit?usp=sharing
 
-## Cómo compilar
-
-1. Clonar este repositorio
-2. Abrir MCUXpresso IDE → **File → Import → Existing Projects into Workspace**
-3. Seleccionar la carpeta clonada
-4. Compilar (**Build**) y ejecutar (**Debug/Run**) sobre la placa FRDM-MCXN947 conectada por USB
