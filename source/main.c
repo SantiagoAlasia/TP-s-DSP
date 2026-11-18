@@ -32,11 +32,13 @@
 #include "arm_math.h"
 #include "fsl_debug_console.h"
 #include "fsl_lpadc.h"
-#include "arm_math.h"
 #include "fsl_dac.h"
+#include <fir_planta.h>
+#include <fir_adaptativo.h>
+#include <uart_protocol.h>
 
 /* Modo Debug */
-#define MODO_DEBUG                1   // 1 = imprime por PRINTF, 0 = no imprime nada
+//#define MODO_DEBUG                1   // 1 = imprime por PRINTF, 0 = no imprime nada
 
 /** Pin del boton de cambio de modo (SW3) dentro del puerto GPIO0. */
 #define PIN_START_STOP            6U
@@ -46,9 +48,6 @@
 
 /** Cantidad de estados de frecuencia disponibles. */
 #define CANT_ESTADOS       	      4U
-
-/** Cantidad de valores posibles para MU disponibles. */
-#define CANT_MU_VALUES    	      6U
 
 /**
  * Estados de la maquina de estados principal.
@@ -64,16 +63,27 @@ typedef enum
 /** Estado actual de la maquina de estados. */
 estado_muestreo_t f_estado = ESTADO_OFF;
 
-/* Tabla de mu en Q15 (SW2 avanza): 0.01  0.05  0.1  0.25  0.5  0.9 */
-const int16_t MU_VALUES[CANT_MU_VALUES] = { 328, 1638, 3277, 8192, 16384, 29491 };
+/** Valores intermedios del diseño */
+q15_t x, d, y, e;
 
-/* Indice del valor de MU actual*/
-uint8_t i_mu = 0;
+/* Acumulador para el calculo del error cuadratico */
+int64_t acc = 0;
+
+/** Muestas del bloque actual*/
+uint32_t n = 0;
+
+int32_t mse;
+
+int16_t dw[30];
+
+/*Numero de experimento*/
+uint32_t seq = 0;
 
 /*
  * Prototipos de funciones
  */
 void prender_leds(void);
+q15_t rand_q15(void);
 
 /**
  * @brief Enciende el LED RGB con el color correspondiente al estado actual.
@@ -115,6 +125,13 @@ void prender_leds(void)
 }
 
 /**
+ * @brief Generacion de un numero pseudorandom en formato Q15
+ */
+q15_t rand_q15(void){
+	return (q15_t)((rand() % 32768) - 16384);   // [-0.5, 0.5)
+}
+
+/**
  * @brief Rutina de interrupcion de GPIO0.
  *
  * Distingue cual de los dos botones genero la interrupcion, actualiza la
@@ -147,6 +164,16 @@ void GPIO0_INT_0_IRQHANDLER(void)
         f_estado = (estado_muestreo_t)((f_estado + 1U) % CANT_ESTADOS);
     }
 
+    if(f_estado != ESTADO_OFF){
+    	// Reinicia el filtro
+    	seq++;
+
+   	    arm_lms_init_q15(&lms, NTAPS_ADAPTATIVO, w, lms_state, MU_VALUES[i_mu], BLOCK_SIZE, 0);
+
+   	    // Nueva configuracion
+   	    tx_cfg(seq, f_estado, i_mu, MU_VALUES[i_mu]);
+    }
+
     prender_leds();
 
     GPIO_GpioClearInterruptChannelFlags(GPIO0, pin_flags0, 0U);
@@ -165,6 +192,21 @@ void CTIMER0_Callback(uint32_t flags)
 {
     (void)flags;
 
+    if(f_estado != ESTADO_OFF){
+    	x = rand_q15();
+    	arm_fir_q15(&planta_inst, &x, &d, 1);
+    	arm_lms_q15(&lms,&x, &d, &y, &e, BLOCK_SIZE);
+
+    	acc += (int64_t)e * e;
+    	if(++n == 100){
+    		mse = acc / 100;
+    		arm_sub_q15(PLANTA_COEF, w, dw, 30);    // dw[k] = h_rev[k] - w[k], saturado
+    		acc = 0;
+    		n = 0;
+    	}
+
+    	tx_data(seq, mse, dw);
+    }
 }
 
 /**
@@ -183,6 +225,10 @@ int main(void)
     // Me aseguro que esten apagados todos los leds.
     f_estado = ESTADO_OFF;
     prender_leds();
+
+    // Inicializacion de los filtros
+    arm_fir_init_q15(&planta_inst, PLANTA_NTAPS, PLANTA_COEF, planta_state, BLOCK_SIZE);
+    arm_lms_init_q15(&lms, NTAPS_ADAPTATIVO, w, lms_state, MU_VALUES[i_mu], BLOCK_SIZE, 0);
 
     while (1) {}
 
