@@ -25,4 +25,19 @@ static q15_t lms_state[NTAPS_ADAPTATIVO];
 /** Instancia del filtro */
 static arm_lms_instance_q15 lms;
 
+/** Numero de experimento */
+static uint32_t seq = 0;
+
+/* Acumulador para el calculo del MSE */
+static int64_t acc = 0;
+
+/** Cantidad de Muestras de la ventana actual*/
+static uint32_t n = 0;
+
+/** Valor del MSE */
+static int32_t mse;
+
+/** Arreglo con la diferencia entre los coeficientes definidos y los estimados: d[i] = coef[i] - w[i]*/
+static int16_t dw[NTAPS_ADAPTATIVO];
+
 #endif /* FIR_ADAPTATIVO_H_ */

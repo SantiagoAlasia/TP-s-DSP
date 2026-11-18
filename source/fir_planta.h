@@ -17,7 +17,7 @@ static const q15_t PLANTA_COEF[PLANTA_NTAPS] = {
       334,   503,   346,   167,   133,   111,   -53,  -263,  -306,  -146
 };
 
-static q15_t planta_state[PLANTA_NTAPS + BLOCK_SIZE];        /* estado: numTaps + blockSize - 1*/
+static q15_t planta_state[PLANTA_NTAPS + BLOCK_SIZE];
 static arm_fir_instance_q15 planta_inst;
 
 #endif /* FIR_PLANTA_H */

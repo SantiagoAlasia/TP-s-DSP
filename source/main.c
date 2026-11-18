@@ -33,6 +33,7 @@
 #include "fsl_debug_console.h"
 #include "fsl_lpadc.h"
 #include "fsl_dac.h"
+
 #include <fir_planta.h>
 #include <fir_adaptativo.h>
 #include <uart_protocol.h>
@@ -66,18 +67,8 @@ estado_muestreo_t f_estado = ESTADO_OFF;
 /** Valores intermedios del diseño */
 q15_t x, d, y, e;
 
-/* Acumulador para el calculo del error cuadratico */
-int64_t acc = 0;
-
-/** Muestas del bloque actual*/
-uint32_t n = 0;
-
-int32_t mse;
-
-int16_t dw[30];
-
-/*Numero de experimento*/
-uint32_t seq = 0;
+/** Envio de datos pendiente */
+volatile uint8_t flag_enviar = 0;
 
 /*
  * Prototipos de funciones
@@ -192,21 +183,35 @@ void CTIMER0_Callback(uint32_t flags)
 {
     (void)flags;
 
-    if(f_estado != ESTADO_OFF){
-    	x = rand_q15();
-    	arm_fir_q15(&planta_inst, &x, &d, 1);
-    	arm_lms_q15(&lms,&x, &d, &y, &e, BLOCK_SIZE);
-
-    	acc += (int64_t)e * e;
-    	if(++n == 100){
-    		mse = acc / 100;
-    		arm_sub_q15(PLANTA_COEF, w, dw, 30);    // dw[k] = h_rev[k] - w[k], saturado
-    		acc = 0;
-    		n = 0;
-    	}
-
-    	tx_data(seq, mse, dw);
+    switch(f_estado){
+    	case ESTADO_IDEN_CONST:
+    		x = 16384; // 0.5 en Q15
+    		break;
+    	case ESTADO_IDEN_CONST:
+    		x = rand_q15();
+    	    break;
+    	default:
+    		return;
     }
+
+    arm_fir_q15(&planta_inst, &x, &d, 1);
+    arm_lms_q15(&lms, &x, &d, &y, &e, BLOCK_SIZE);
+
+    acc += (int64_t)e * e;
+
+    if (++n == 100) {
+    	mse = (int32_t)(acc / 100);
+
+    	for (int k = 0; k < 30; k++) {
+        	// w en CMSIS-DSP esta invertido respecto a PLANTA_COEF
+        	dw[k] = PLANTA_COEF[k] - w[29 - k];
+        }
+
+        acc = 0;
+        n = 0;
+        flag_enviar = 1; // Avisa al main que envie por UART
+
+   }
 }
 
 /**
@@ -222,7 +227,7 @@ int main(void)
     BOARD_InitDebugConsole();
 #endif
 
-    // Me aseguro que esten apagados todos los leds.
+    // Inicializacion en estado OFF
     f_estado = ESTADO_OFF;
     prender_leds();
 
@@ -230,7 +235,14 @@ int main(void)
     arm_fir_init_q15(&planta_inst, PLANTA_NTAPS, PLANTA_COEF, planta_state, BLOCK_SIZE);
     arm_lms_init_q15(&lms, NTAPS_ADAPTATIVO, w, lms_state, MU_VALUES[i_mu], BLOCK_SIZE, 0);
 
-    while (1) {}
+    while (1) {
+    	if (flag_enviar) {
+    		flag_enviar = 0;
+
+    		// Envio un paquete con formato ya establecido
+    		tx_data(seq, mse, dw);
+    	}
+    }
 
     return 0;
 }
