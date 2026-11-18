@@ -434,9 +434,9 @@ void BOARD_InitPeripherals(void)
   /* Initialize components */
   GPIO0_init();
   CTIMER0_init();
-  VREF0_init();
-  DAC0_init();
-  ADC0_init();
+  //VREF0_init();
+  //DAC0_init();
+  //ADC0_init();
 }
 
 /***********************************************************************************************************************

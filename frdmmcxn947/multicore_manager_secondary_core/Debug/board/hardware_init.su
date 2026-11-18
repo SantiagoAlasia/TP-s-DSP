@@ -1,0 +1,2 @@
+/home/santiagoalasia/Documentos/UNC/ProcesamientoDigitalDeSeñales/TP-s-DSP/frdmmcxn947/multicore_manager_secondary_core/drivers/fsl_clock.h:1496:20:CLOCK_EnableClock	24	static
+../board/hardware_init.c:15:6:BOARD_InitHardware	8	static

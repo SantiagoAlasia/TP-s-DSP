@@ -1,0 +1,4 @@
+/home/santiagoalasia/Documentos/UNC/ProcesamientoDigitalDeSeñales/TP-s-DSP/frdmmcxn947/multicore_manager_secondary_core/drivers/fsl_clock.h:1496:20:CLOCK_EnableClock	24	static
+/home/santiagoalasia/Documentos/UNC/ProcesamientoDigitalDeSeñales/TP-s-DSP/frdmmcxn947/multicore_manager_secondary_core/drivers/fsl_port.h:360:20:PORT_SetPinConfig	32	static
+../board/pin_mux.c:35:6:BOARD_InitBootPins	8	static
+../board/pin_mux.c:58:6:BOARD_InitPins_Core1	16	static
