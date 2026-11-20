@@ -1,86 +1,127 @@
-# TP1 - Muestreo con MCXN947
+# TP4 – Filtros adaptativos con FRDM-MCXN947
 
-Trabajo práctico de la materia **Procesamiento Digital de Señales**. Implementa un sistema de adquisición y reproducción de señal utilizando el conversor A/D y D/A integrados en el microcontrolador **MCXN947** (placa FRDM-MCXN947).
+Cátedra de DSP – Facultad de Ciencias Exactas, Físicas y Naturales – UNC
 
-## Objetivo
+**Integrantes:**
+- Feiguin, Lucia
+- Monutti, Elena
+- Alasia Santiago
 
-Manejar el módulo ADC del MCU MCXN947 para digitalizar una señal analógica a distintas velocidades de muestreo, almacenarla en un buffer circular en formato de punto fijo Q15, y reproducirla a través del DAC integrado.
+Implementación de dos sistemas adaptativos (algoritmo LMS, 30 coeficientes, CMSIS-DSP) sobre la placa **FRDM-MCXN947**:
 
-## Funcionalidades
+1. **Identificación de planta:** el filtro adaptativo aprende los coeficientes de una planta FIR conocida.
+2. **Cancelación de ruido:** se recupera una senoidal externa a la que se le sumó ruido.
 
-- **Adquisición configurable:** el ADC digitaliza la señal de entrada a 5 velocidades de muestreo seleccionables: **8K, 16K, 22K, 44K y 48K muestras/segundo**.
-- **Selección de frecuencia por botón (SW2):** cicla circularmente entre las 5 velocidades disponibles.
-- **Run/Stop (SW3):** habilita o detiene la adquisición y reproducción sin perder el estado de frecuencia seleccionado.
-- **Indicación visual:** un LED RGB indica la velocidad de muestreo activa mediante un código de colores.
-- **Buffer circular:** las muestras se almacenan en un buffer de 512 posiciones en formato **Q15** (Q1.15, punto fijo con signo).
-- **Reproducción por DAC:** las muestras adquiridas se reconvierten a 12 bits y se envían al DAC para reconstruir la señal.
-- **Disparo sincronizado por hardware (CTIMER):** el CTIMER0 genera los eventos periódicos de match que disparan, por software, tanto la conversión del ADC como el envío de la siguiente muestra al DAC — garantizando un período de muestreo estable ($T_s$ constante).
+El control es por botones, los resultados de la parte 1 se envían por UART y se grafican en Octave, y la salida de la parte 2 se observa con un osciloscopio.
 
-## Máquina de estados
+---
 
-| Estado | ADC | Frecuencia | LED |
-|:---:|:---:|:---:|:---:|
-| 0 | OFF | — | Apagado |
-| 1 | ON | 8 kS/s | Rojo |
-| 2 | ON | 16 kS/s | Verde |
-| 3 | ON | 22 kS/s | Azul |
-| 4 | ON | 44 kS/s | Rojo + Verde |
-| 5 | ON | 48 kS/s | Verde + Azul |
+## Uso rápido
 
-## Arquitectura
+| Botón | Función |
+|---|---|
+| **SW2** | Cambia de etapa (ciclo: OFF → ID random → ID constante → Cancelación → OFF) |
+| **SW3** | Pasa al siguiente valor de `mu` (vuelve al primero al llegar al último) |
 
-```
-SW3 (Run/Stop) ─┐
-                 ├─► GPIO IRQ ─► Máquina de Estados ─► LED RGB
-SW2 (Frecuencia)─┘                      │
-                                         ▼
-                              CTIMER0 (Match 3)
-                                         │
-                        ┌────────────────┴────────────────┐
-                        ▼                                  ▼
-                 Trigger SW → ADC1                   Lectura buffer → DAC0
-                        │
-                        ▼
-              Buffer circular Q15 (512 muestras)
-```
+Cada cambio de etapa o de `mu` **reinicia el filtro** (coeficientes en cero) y comienza un nuevo experimento.
 
-- **CTIMER0 (Match 3):** genera la base de tiempo. Su `matchValue` se recalcula dinámicamente según el estado activo, para lograr cada una de las 5 frecuencias de muestreo.
-- **LPADC1:** dispara conversión por software en cada evento de match. El resultado se convierte a Q15 y se guarda en el buffer de escritura.
-- **DAC0:** en el mismo evento de match, se lee la siguiente muestra pendiente del buffer y se envía al conversor D/A tras reescalar de Q15 a 12 bits.
+| Etapa | LED | ADC / DAC | Qué hace |
+|---|---|---|---|
+| OFF | apagado | no se usan | No procesa |
+| ID random | rojo | no se usan | Identificación con ruido gaussiano como entrada |
+| ID constante | verde | no se usan | Identificación con entrada constante (0.5) |
+| Cancelación | azul | se usan | Cancelación de ruido sobre la señal del ADC |
 
-## Conversión de formatos
+Valores de `mu` (los índices avanzan con SW3):
 
-- **ADC → Q15:** el resultado del ADC (sin signo, centrado en la mitad de escala) se recentra restando el offset correspondiente, quedando una señal con signo en el rango aproximado [-1, 1).
-- **Q15 → DAC (12 bits):** el valor Q15 se reescala y desplaza para quedar dentro del rango sin signo de 12 bits [0, 4095], saturando en los extremos.
+| Índice | 0 | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|---|
+| Identificación (Q15) | 0.05 | 0.10 | 0.20 | 0.35 | 0.50 | 0.70 |
+| Cancelación (float) | 0.001 | 0.002 | 0.005 | 0.01 | 0.02 | 0.05 |
 
-## Hardware utilizado
+---
 
-- Placa **FRDM-MCXN947**
-- Entrada analógica: pin **P1_23 (ADC1_A23)**
-- Botones de usuario de la placa (Run/Stop y cambio de frecuencia)
-- LED RGB integrado
+## Cómo funciona
 
-## Herramientas
+El **CTimer0** marca el período de muestreo y su interrupción dispara el procesamiento. La planta y el LMS de la parte 1 trabajan en formato **Q15**, muestra a muestra (`blockSize = 1`).
 
-- **MCUXpresso IDE** + **MCUXpresso SDK**
-- **Config Tools** (Pins, Clocks, Peripherals) para la configuración gráfica de ADC1, CTIMER0 y DAC0
-- **CMSIS-DSP** (`arm_math.h`) para el tipo de dato Q15
-
-## Estructura del repositorio
+### Parte 1 – Identificación de planta
 
 ```
-├── source/
-│   └── TP1.c              # Código principal de la aplicación
-├── board/                  # Configuración de la placa (generado por Config Tools)
-├── drivers/                 # Drivers del SDK utilizados
-└── README.md
+x (random o constante) ─┬─► PLANTA (FIR 30 coef) ─► d ──►(+)──► e = d − y
+                        │                                ▲(−)
+                        └─► FILTRO ADAPTATIVO (LMS) ─► y ┘
+                                     ▲                          │
+                                     └──────── actualiza ◄──────┘
 ```
-## Informe Del Trabajo Practico
-- [https://docs.google.com/document/d/1m1BM4pqOChJ_MaOh5tzhRJZUJEIAaMJA5ULlo6_hthE/edit?usp=sharing](https://docs.google.com/document/d/12OGnF_wi7s2z0UlEzXOtJ9wNDCni3doigHSkon9hqS4/edit?usp=sharing)
 
-## Cómo compilar
+- Cada **100 muestras** se calcula el **MSE** (promedio de `e²`) y la diferencia entre los coeficientes de la planta y los del adaptativo: `dw[k] = PLANTA_COEF[k] − w[k]`.
+- Ese bloque se envía por UART (ver protocolo).
+- Los coeficientes están guardados en el orden que usa CMSIS (invertido), por eso `dw` se calcula elemento a elemento.
 
-1. Clonar este repositorio
-2. Abrir MCUXpresso IDE → **File → Import → Existing Projects into Workspace**
-3. Seleccionar la carpeta clonada
-4. Compilar (**Build**) y ejecutar (**Debug/Run**) sobre la placa FRDM-MCXN947 conectada por USB
+### Parte 2 – Cancelación de ruido
+
+```
+random (ruido x) ─┬─► CORRELADOR (FIR 30 coef) ─►(+)◄── senoidal (ADC)
+                  │                               │ d = señal + ruido correlacionado
+                  │                               ▼
+                  └─► FILTRO ADAPTATIVO (LMS) ─► y ─►(−)─► e = d − y ─► DAC ─► osciloscopio
+```
+
+- En cada tick del CTimer se **saca al DAC** la muestra calculada en el tick anterior y se **dispara el ADC**.
+- La interrupción de fin de conversión pasa el resultado a Q15 y avisa al `main`, que calcula la nueva salida.
+- El filtro adaptativo es **LMS en punto flotante**: `arm_lms_q15` trunca en cada actualización y eso introduce un sesgo que degrada la cancelación.
+- La salida `e` converge a la senoidal limpia.
+
+---
+
+## Protocolo UART
+
+Texto, una línea por mensaje, terminada en `\r\n`, a **115200 baudios**.
+
+| Línea | Formato | Cuándo |
+|---|---|---|
+| Configuración | `C,seq,modo,mu_idx,mu_q15` | Al cambiar de etapa o de `mu` |
+| Datos | `D,seq,mse_q30,dw0,…,dw29` | Cada 100 muestras (solo en identificación) |
+
+- `seq`: número de experimento (sube en 1 con cada reinicio).
+- `modo`: 0 = OFF, 1 = ID random, 2 = ID constante, 3 = Cancelación.
+- `mse_q30`: MSE crudo. MSE real = `mse_q30 / 2^30`.
+- `dw[k]`: diferencia de coeficientes en Q15. Valor real = `dw / 32768`.
+- En cancelación solo se envía la línea `C`; la salida se mide en el osciloscopio.
+
+---
+
+## Archivos
+
+| Archivo | Contenido |
+|---|---|
+| `main.c` | FSM, interrupciones (botones, CTimer, ADC), LMS, ADC/DAC, envío por UART |
+| `fir_planta.h` | Coeficientes de la planta / correlador (30, Q15) e instancia del FIR |
+| `fir_adaptativo.h` | Tablas de `mu`, coeficientes, estados e instancias de los LMS, variables del MSE |
+| `uart_protocol.h` | Funciones `tx_cfg()` y `tx_data()` que dan formato a los mensajes |
+| `semihost_hardfault.c` | Manejador de HardFault generado por MCUXpresso |
+| `octave/recibir_simple.m` | Recibe los datos por el puerto serie y los grafica en tiempo real |
+
+Opciones en `main.c`: `MODO_DEBUG` (mensajes de depuración) y `MODO_BYPASS` (el DAC saca la muestra cruda del ADC, útil para verificar la parte analógica).
+
+---
+
+## Cómo usarlo
+
+**Requisitos:** MCUXpresso IDE con el SDK de la FRDM-MCXN947 (CMSIS-DSP incluido en el proyecto), y Octave con el paquete `instrument-control` (`pkg install -forge instrument-control`).
+
+1. Importar el proyecto en MCUXpresso IDE, compilar y cargarlo con el depurador (cable USB al puerto MCU-Link).
+2. **Parte 1:** cerrar cualquier terminal serie abierta, ejecutar `recibir_simple` en Octave (puerto `/dev/ttyACM0`, 115200; se cambia al inicio del script) y usar SW2/SW3 en la placa. Se grafican el MSE, la distancia entre coeficientes y `dw[k]` del último bloque.
+3. **Parte 2:** conectar la señal del generador a la entrada del ADC y la salida del DAC al osciloscopio. La senoidal debe estar centrada en la mitad de la escala del ADC.
+   - Entrada ADC: ADC0A0
+   - Salida DAC: P4_2
+
+---
+
+## Resultados esperados
+
+- **Entrada random:** el MSE baja varios órdenes de magnitud y la distancia entre coeficientes tiende a cero. El filtro identifica la planta.
+- **Entrada constante:** el MSE también baja, pero la distancia entre coeficientes **se estanca**. Una señal constante solo excita la ganancia en continua, así que el filtro no puede distinguir entre infinitas combinaciones de coeficientes.
+- **`mu` alto con entrada constante:** diverge si `mu > 2/(N·C²) ≈ 0.27` (N = 30, C = 0.5), por eso `mu = 0.35, 0.5, 0.7` no son estables en ese modo.
+- **Cancelación:** al arrancar se ve la senoidal con ruido y, a medida que el filtro converge, la salida del DAC queda limpia.
